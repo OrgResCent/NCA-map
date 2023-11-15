@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <style>
+        #map {
+            width: 1369px;
+            height: 694px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/proj4.js"></script>
+        <script src="js/proj4leaflet.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/NCAArea_0.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var crs = new L.Proj.CRS('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs', {
+            resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
+        });
+        var map = L.map('map', {
+            crs: crs,
+            continuousWorld: false,
+            worldCopyJump: false, 
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[49.38791220722371,-13.207731349252523],[55.95806622244957,8.247989984509378]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        function pop_NCAArea_0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NCA Name</th>\
+                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NCA Area (sqkm)</th>\
+                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Percentage of Plantable Area</th>\
+                        <td>' + (feature.properties['Planting_P'] !== null ? autolinker.link(feature.properties['Planting_P'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Hedgerow Score</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Road Density</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Road_Density'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Road_Density'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Average Field Size</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Field_Size'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Field_Size'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Upper Existing Hedgerow Estiamte</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Current_Density_High'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Current_Density_High'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lower Existing Hedgerow Estimate</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Current_Density_Low'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Current_Density_Low'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Dominant Agriculture</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Percentage of Disturbed Land</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Intrusion_Disturbed'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Intrusion_Disturbed'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Percentage of Undisturbed Land</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Intrusion_Unidisturbed'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Intrusion_Unidisturbed'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Percentage of Urban Land</th>\
+                        <td>' + (feature.properties['Formatted NCA Score_Intrusion_Urban'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Intrusion_Urban'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_NCAArea_0_0(feature) {
+            switch(String(feature.properties['Formatted NCA Score_Hedgerow_Score'])) {
+                case '1':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,1,84,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1.25':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,40,120,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1.5':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(62,74,137,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1.75':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(49,104,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(38,131,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2.25':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(30,158,137,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2.5':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,183,121,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2.75':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(108,206,89,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_NCAArea_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,222,44,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_NCAArea_0');
+        map.getPane('pane_NCAArea_0').style.zIndex = 400;
+        map.getPane('pane_NCAArea_0').style['mix-blend-mode'] = 'normal';
+        var layer_NCAArea_0 = new L.geoJson(json_NCAArea_0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_NCAArea_0',
+            layerName: 'layer_NCAArea_0',
+            pane: 'pane_NCAArea_0',
+            onEachFeature: pop_NCAArea_0,
+            style: style_NCAArea_0_0,
+        });
+        bounds_group.addLayer(layer_NCAArea_0);
+        map.addLayer(layer_NCAArea_0);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_NCAArea_0,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'NCA_Name'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        </script>
+    </body>
+</html>
