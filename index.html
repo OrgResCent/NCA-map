@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="css/leaflet-search.css">
         <style>
         #map {
-            width: 1369px;
+            width: 988px;
             height: 694px;
         }
         </style>
@@ -32,7 +32,7 @@
         <script src="js/proj4.js"></script>
         <script src="js/proj4leaflet.js"></script>
         <script src="js/leaflet-search.js"></script>
-        <script src="data/NCAArea_0.js"></script>
+        <script src="data/NCAHedgerowScore_0.js"></script>
         <script>
         var highlightLayer;
         function highlightFeature(e) {
@@ -57,14 +57,14 @@
             continuousWorld: false,
             worldCopyJump: false, 
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[49.38791220722371,-13.207731349252523],[55.95806622244957,8.247989984509378]]);
+        }).fitBounds([[49.6417484606314,-9.670024582220242],[56.002487964680846,5.898109492604821]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
-        function pop_NCAArea_0(feature, layer) {
+        function pop_NCAHedgerowScore_0(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -75,62 +75,40 @@
             });
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>NCA Name</strong><br />' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">NCA Area (sqkm)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Area (km2)</strong><br />' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Percentage of Plantable Area</th>\
-                        <td>' + (feature.properties['Planting_P'] !== null ? autolinker.link(feature.properties['Planting_P'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Hedgerow Score</strong><br />' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Hedgerow Score</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Plantable Area (%)</strong><br />' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Road Density</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Road_Density'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Road_Density'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Existing Hedgerow Density (%)</strong><br />' + (feature.properties['Existing_Hedgerow_Percentage'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Field_Size'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Field_Size'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Road Density (%)</strong><br />' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Upper Existing Hedgerow Estiamte</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Current_Density_High'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Current_Density_High'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Average Field Size</strong><br />' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Lower Existing Hedgerow Estimate</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Current_Density_Low'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Current_Density_Low'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Dominant Agriculture Type</strong><br />' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Percentage of Disturbed Land</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Intrusion_Disturbed'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Intrusion_Disturbed'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Percentage of Undisturbed Land</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Intrusion_Unidisturbed'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Intrusion_Unidisturbed'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Percentage of Urban Land</th>\
-                        <td>' + (feature.properties['Formatted NCA Score_Intrusion_Urban'] !== null ? autolinker.link(feature.properties['Formatted NCA Score_Intrusion_Urban'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Ecosystem Services</strong><br />' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_NCAArea_0_0(feature) {
-            switch(String(feature.properties['Formatted NCA Score_Hedgerow_Score'])) {
-                case '1':
-                    return {
-                pane: 'pane_NCAArea_0',
+        function style_NCAHedgerowScore_0_0(feature) {
+            if (feature.properties['Hedgerow_Score'] >= 1.000000 && feature.properties['Hedgerow_Score'] <= 1.500000 ) {
+                return {
+                pane: 'pane_NCAHedgerowScore_0',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -139,13 +117,13 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(68,1,84,1.0)',
+                fillColor: 'rgba(247,252,245,1.0)',
                 interactive: true,
             }
-                    break;
-                case '1.25':
-                    return {
-                pane: 'pane_NCAArea_0',
+            }
+            if (feature.properties['Hedgerow_Score'] >= 1.500000 && feature.properties['Hedgerow_Score'] <= 2.000000 ) {
+                return {
+                pane: 'pane_NCAHedgerowScore_0',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -154,13 +132,13 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(71,40,120,1.0)',
+                fillColor: 'rgba(178,224,171,1.0)',
                 interactive: true,
             }
-                    break;
-                case '1.5':
-                    return {
-                pane: 'pane_NCAArea_0',
+            }
+            if (feature.properties['Hedgerow_Score'] >= 2.000000 && feature.properties['Hedgerow_Score'] <= 2.500000 ) {
+                return {
+                pane: 'pane_NCAHedgerowScore_0',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -169,13 +147,13 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(62,74,137,1.0)',
+                fillColor: 'rgba(61,167,90,1.0)',
                 interactive: true,
             }
-                    break;
-                case '1.75':
-                    return {
-                pane: 'pane_NCAArea_0',
+            }
+            if (feature.properties['Hedgerow_Score'] >= 2.500000 && feature.properties['Hedgerow_Score'] <= 3.000000 ) {
+                return {
+                pane: 'pane_NCAHedgerowScore_0',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -184,104 +162,28 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(49,104,142,1.0)',
+                fillColor: 'rgba(0,68,27,1.0)',
                 interactive: true,
             }
-                    break;
-                case '2':
-                    return {
-                pane: 'pane_NCAArea_0',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(38,131,142,1.0)',
-                interactive: true,
-            }
-                    break;
-                case '2.25':
-                    return {
-                pane: 'pane_NCAArea_0',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(30,158,137,1.0)',
-                interactive: true,
-            }
-                    break;
-                case '2.5':
-                    return {
-                pane: 'pane_NCAArea_0',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(53,183,121,1.0)',
-                interactive: true,
-            }
-                    break;
-                case '2.75':
-                    return {
-                pane: 'pane_NCAArea_0',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(108,206,89,1.0)',
-                interactive: true,
-            }
-                    break;
-                case '3':
-                    return {
-                pane: 'pane_NCAArea_0',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(180,222,44,1.0)',
-                interactive: true,
-            }
-                    break;
             }
         }
-        map.createPane('pane_NCAArea_0');
-        map.getPane('pane_NCAArea_0').style.zIndex = 400;
-        map.getPane('pane_NCAArea_0').style['mix-blend-mode'] = 'normal';
-        var layer_NCAArea_0 = new L.geoJson(json_NCAArea_0, {
+        map.createPane('pane_NCAHedgerowScore_0');
+        map.getPane('pane_NCAHedgerowScore_0').style.zIndex = 400;
+        map.getPane('pane_NCAHedgerowScore_0').style['mix-blend-mode'] = 'normal';
+        var layer_NCAHedgerowScore_0 = new L.geoJson(json_NCAHedgerowScore_0, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_NCAArea_0',
-            layerName: 'layer_NCAArea_0',
-            pane: 'pane_NCAArea_0',
-            onEachFeature: pop_NCAArea_0,
-            style: style_NCAArea_0_0,
+            dataVar: 'json_NCAHedgerowScore_0',
+            layerName: 'layer_NCAHedgerowScore_0',
+            pane: 'pane_NCAHedgerowScore_0',
+            onEachFeature: pop_NCAHedgerowScore_0,
+            style: style_NCAHedgerowScore_0_0,
         });
-        bounds_group.addLayer(layer_NCAArea_0);
-        map.addLayer(layer_NCAArea_0);
+        bounds_group.addLayer(layer_NCAHedgerowScore_0);
+        map.addLayer(layer_NCAHedgerowScore_0);
         setBounds();
         map.addControl(new L.Control.Search({
-            layer: layer_NCAArea_0,
+            layer: layer_NCAHedgerowScore_0,
             initial: false,
             hideMarkerOnCollapse: true,
             propertyName: 'NCA_Name'}));
