@@ -22,19 +22,18 @@
     </head>
     <body>
         <div>
-        <h1>NCA Hedgerow Map</h1>
-        <div class = logo> 
-            <a href = "https://www.organicresearchcentre.com/" target="_blank"><img src="images/ORC Logo.png" alt="Organic Research Centre" width="200" style="padding-right: 1rem;"></a>
-            <a href = "https://www.cpre.org.uk/" target="_blank"><img src="images/CPRE.webp" alt="The Countryside Charity" width="200"></a>
-        </div>
-        <h2>CPRE Aiming High for Hedgerows</h2>
-        <p> This map depicts mulitple characteristics of NCAs with a focus on hedgerows may be suited to each location. 
-            Different maps can be selected using the right-hand side panel, while clicking on individual NCAs will bring up a popup containing additional data.
-            NCAs can be searched for by clicking on the search icon to the left.</p>
-        <p>
-            For explanitory information please read the CPRE Aiming High for Hedgerows Report.
-        </p>
-        </div>
+            <h1>NCA Hedgerow Map</h1>
+            <div class = logo> 
+                <a href = "https://www.organicresearchcentre.com/" target="_blank"><img src="images/ORC Logo.png" alt="Organic Research Centre" width="200" style="padding-right: 1rem;"></a>
+                <a href = "https://www.cpre.org.uk/" target="_blank"><img src="images/CPRE.webp" alt="The Countryside Charity" width="200"></a>
+            </div>
+            <h2>CPRE Aiming High for Hedgerows</h2>
+            <p>The UK Government has set a target to "create or restore 30,000 miles (48,280km) of hedgerows by 2037, and 45,000 miles (72,420km) of hedgerows by 2050".
+                How to meet this target is still unclear. This tool compliments the CPRE Aiming High for Hedgerow Report in exploring how this target could be met 
+                and which areas of the UK should be prioritised for extensive hedgerow planting.</p>
+            <p>A variety of maps can be chosen using the right-hand side panel, while specific figures can be brought up by clicking on an idividual National Character Area (NCA).
+                In addition NCAs can be searched for by name by clicking on the search icon to the left.</p>
+            </div>
         <div id="map">
         </div>
         <script src="js/qgis2web_expressions.js"></script>
@@ -50,16 +49,18 @@
         <script src="data/UrbanLand_0.js"></script>
         <script src="data/UndisturbedLand_1.js"></script>
         <script src="data/DisturbedLand_2.js"></script>
-        <script src="data/RoadDensitykmkm2_3.js"></script>
-        <script src="data/ExistingHedgerow_4.js"></script>
-        <script src="data/PlantableArea_5.js"></script>
-        <script src="data/PlantableAreakm2_6.js"></script>
-        <script src="data/HedgerowTargetkm2_7.js"></script>
-        <script src="data/HedgerowPriorityScore_8.js"></script>
-        <script src="data/HedgerowManagement_9.js"></script>
-        <script src="data/PolicySupport_10.js"></script>
-        <script src="data/ExistingHedgerowCondition_11.js"></script>
-        <script src="data/HistoricHedgerowCover_12.js"></script>
+        <script src="data/DominantAgriculture_3.js"></script>
+        <script src="data/AverageFarmSizeHa_4.js"></script>
+        <script src="data/RoadDensitykmkm2_5.js"></script>
+        <script src="data/ExistingHedgerow_6.js"></script>
+        <script src="data/PlantableArea_7.js"></script>
+        <script src="data/PlantableAreakm2_8.js"></script>
+        <script src="data/HedgerowTargetkm_9.js"></script>
+        <script src="data/HedgerowPriorityScore_10.js"></script>
+        <script src="data/HedgerowManagement_11.js"></script>
+        <script src="data/PolicySupport_12.js"></script>
+        <script src="data/ExistingHedgerowCondition_13.js"></script>
+        <script src="data/HistoricHedgerowCover_14.js"></script>
         <script>
         var highlightLayer;
         function highlightFeature(e) {
@@ -78,7 +79,7 @@
         }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[49.43649506579971,-9.721804117850203],[55.78910962953394,4.843605129920575]]);
+        }).fitBounds([[49.29032999097177,-10.451207941905858],[55.68240788830231,4.069797077801277]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://www.organicresearchcentre.com/" title="Organic Research Centre" target="_blank">ORC</a> &middot<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -108,7 +109,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -144,8 +145,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td colspan="2">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -285,7 +286,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -321,8 +322,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -459,74 +460,74 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Historic'] !== null ? autolinker.link(feature.properties['Refactored_Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
+                        <td>' + (feature.properties['Refactored_Existing'] !== null ? autolinker.link(feature.properties['Refactored_Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_SEO'] !== null ? autolinker.link(feature.properties['Refactored_SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Management'] !== null ? autolinker.link(feature.properties['Refactored_Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Refactored_Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Hedgerow_target'] !== null ? autolinker.link(feature.properties['Refactored_Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Refactored_Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow (%)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_Percentage'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Existing_Hedgerow_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Existing_Hedgerow_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Refactored_Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Refactored_Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Refactored_Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Refactored_Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Refactored_Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
         function style_DisturbedLand_2_0(feature) {
-            if (feature.properties['Intrusion_Disturbed_Percentage'] >= 0.000000 && feature.properties['Intrusion_Disturbed_Percentage'] <= 20.000000 ) {
+            if (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] >= 0.000000 && feature.properties['Refactored_Intrusion_Disturbed_Percentage'] <= 20.000000 ) {
                 return {
                 pane: 'pane_DisturbedLand_2',
                 opacity: 1,
@@ -541,7 +542,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Intrusion_Disturbed_Percentage'] >= 20.000000 && feature.properties['Intrusion_Disturbed_Percentage'] <= 40.000000 ) {
+            if (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] >= 20.000000 && feature.properties['Refactored_Intrusion_Disturbed_Percentage'] <= 40.000000 ) {
                 return {
                 pane: 'pane_DisturbedLand_2',
                 opacity: 1,
@@ -556,7 +557,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Intrusion_Disturbed_Percentage'] >= 40.000000 && feature.properties['Intrusion_Disturbed_Percentage'] <= 60.000000 ) {
+            if (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] >= 40.000000 && feature.properties['Refactored_Intrusion_Disturbed_Percentage'] <= 60.000000 ) {
                 return {
                 pane: 'pane_DisturbedLand_2',
                 opacity: 1,
@@ -571,7 +572,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Intrusion_Disturbed_Percentage'] >= 60.000000 && feature.properties['Intrusion_Disturbed_Percentage'] <= 80.000000 ) {
+            if (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] >= 60.000000 && feature.properties['Refactored_Intrusion_Disturbed_Percentage'] <= 80.000000 ) {
                 return {
                 pane: 'pane_DisturbedLand_2',
                 opacity: 1,
@@ -601,7 +602,7 @@
         });
         bounds_group.addLayer(layer_DisturbedLand_2);
         map.addLayer(layer_DisturbedLand_2);
-        function pop_RoadDensitykmkm2_3(feature, layer) {
+        function pop_DominantAgriculture_3(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -624,7 +625,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -660,8 +661,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -687,10 +688,338 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_RoadDensitykmkm2_3_0(feature) {
+        function style_DominantAgriculture_3_0(feature) {
+            switch(String(feature.properties['Dominant_Agriculture'])) {
+                case 'Arable (Cereal)':
+                    return {
+                pane: 'pane_DominantAgriculture_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(202,0,32,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Arable (Horticulture)':
+                    return {
+                pane: 'pane_DominantAgriculture_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,192,169,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'N/A':
+                    return {
+                pane: 'pane_DominantAgriculture_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,214,230,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pasture':
+                    return {
+                pane: 'pane_DominantAgriculture_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(5,113,176,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_DominantAgriculture_3');
+        map.getPane('pane_DominantAgriculture_3').style.zIndex = 403;
+        map.getPane('pane_DominantAgriculture_3').style['mix-blend-mode'] = 'normal';
+        var layer_DominantAgriculture_3 = new L.geoJson(json_DominantAgriculture_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_DominantAgriculture_3',
+            layerName: 'layer_DominantAgriculture_3',
+            pane: 'pane_DominantAgriculture_3',
+            onEachFeature: pop_DominantAgriculture_3,
+            style: style_DominantAgriculture_3_0,
+        });
+        bounds_group.addLayer(layer_DominantAgriculture_3);
+        map.addLayer(layer_DominantAgriculture_3);
+        function pop_AverageFarmSizeHa_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NCA Name</th>\
+                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Area (km2)</th>\
+                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Historic Hedgerow Cover</th>\
+                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
+                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Policy Support</th>\
+                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Hedgerow Mangement</th>\
+                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Hedgerow Priority Score</th>\
+                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Hedgerow Target (km)</th>\
+                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Plantable Area (km2)</th>\
+                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Plantable Area (%)</th>\
+                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Existing Hedgerow (%)</th>\
+                        <td>' + (feature.properties['Existing_Hedgerow_Percentage'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Road Density (km/km2)</th>\
+                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Dominant Agriculture</th>\
+                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Disturbed Land (%)</th>\
+                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Undisturbed Land (%)</th>\
+                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Urban Land (%)</th>\
+                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ecosystem Services</th>\
+                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_AverageFarmSizeHa_4_0(feature) {
+            switch(String(feature.properties['Farm_Size_Ha'])) {
+                case '100<':
+                    return {
+                pane: 'pane_AverageFarmSizeHa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,248,251,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '50-100':
+                    return {
+                pane: 'pane_AverageFarmSizeHa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(153,215,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '50>':
+                    return {
+                pane: 'pane_AverageFarmSizeHa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(63,173,118,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'N/A':
+                    return {
+                pane: 'pane_AverageFarmSizeHa_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,109,44,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_AverageFarmSizeHa_4');
+        map.getPane('pane_AverageFarmSizeHa_4').style.zIndex = 404;
+        map.getPane('pane_AverageFarmSizeHa_4').style['mix-blend-mode'] = 'normal';
+        var layer_AverageFarmSizeHa_4 = new L.geoJson(json_AverageFarmSizeHa_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AverageFarmSizeHa_4',
+            layerName: 'layer_AverageFarmSizeHa_4',
+            pane: 'pane_AverageFarmSizeHa_4',
+            onEachFeature: pop_AverageFarmSizeHa_4,
+            style: style_AverageFarmSizeHa_4_0,
+        });
+        bounds_group.addLayer(layer_AverageFarmSizeHa_4);
+        map.addLayer(layer_AverageFarmSizeHa_4);
+        function pop_RoadDensitykmkm2_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NCA Name</th>\
+                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Area (km2)</th>\
+                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Historic Hedgerow Cover</th>\
+                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
+                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Policy Support</th>\
+                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Hedgerow Mangement</th>\
+                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Hedgerow Priority Score</th>\
+                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Hedgerow Target (km)</th>\
+                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Plantable Area (km2)</th>\
+                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Plantable Area (%)</th>\
+                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Existing Hedgerow (%)</th>\
+                        <td>' + (feature.properties['Existing_Hedgerow_Percentage'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Road Density (km/km2)</th>\
+                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Dominant Agriculture</th>\
+                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Disturbed Land (%)</th>\
+                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Undisturbed Land (%)</th>\
+                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Urban Land (%)</th>\
+                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ecosystem Services</th>\
+                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_RoadDensitykmkm2_5_0(feature) {
             if (feature.properties['Road_Density_Percentage'] >= 0.000000 && feature.properties['Road_Density_Percentage'] <= 3.000000 ) {
                 return {
-                pane: 'pane_RoadDensitykmkm2_3',
+                pane: 'pane_RoadDensitykmkm2_5',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -705,7 +1034,7 @@
             }
             if (feature.properties['Road_Density_Percentage'] >= 3.000000 && feature.properties['Road_Density_Percentage'] <= 5.000000 ) {
                 return {
-                pane: 'pane_RoadDensitykmkm2_3',
+                pane: 'pane_RoadDensitykmkm2_5',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -720,7 +1049,7 @@
             }
             if (feature.properties['Road_Density_Percentage'] >= 5.000000 && feature.properties['Road_Density_Percentage'] <= 10.000000 ) {
                 return {
-                pane: 'pane_RoadDensitykmkm2_3',
+                pane: 'pane_RoadDensitykmkm2_5',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -735,7 +1064,7 @@
             }
             if (feature.properties['Road_Density_Percentage'] >= 10.000000 && feature.properties['Road_Density_Percentage'] <= 15.800000 ) {
                 return {
-                pane: 'pane_RoadDensitykmkm2_3',
+                pane: 'pane_RoadDensitykmkm2_5',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -749,21 +1078,21 @@
             }
             }
         }
-        map.createPane('pane_RoadDensitykmkm2_3');
-        map.getPane('pane_RoadDensitykmkm2_3').style.zIndex = 403;
-        map.getPane('pane_RoadDensitykmkm2_3').style['mix-blend-mode'] = 'normal';
-        var layer_RoadDensitykmkm2_3 = new L.geoJson(json_RoadDensitykmkm2_3, {
+        map.createPane('pane_RoadDensitykmkm2_5');
+        map.getPane('pane_RoadDensitykmkm2_5').style.zIndex = 405;
+        map.getPane('pane_RoadDensitykmkm2_5').style['mix-blend-mode'] = 'normal';
+        var layer_RoadDensitykmkm2_5 = new L.geoJson(json_RoadDensitykmkm2_5, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_RoadDensitykmkm2_3',
-            layerName: 'layer_RoadDensitykmkm2_3',
-            pane: 'pane_RoadDensitykmkm2_3',
-            onEachFeature: pop_RoadDensitykmkm2_3,
-            style: style_RoadDensitykmkm2_3_0,
+            dataVar: 'json_RoadDensitykmkm2_5',
+            layerName: 'layer_RoadDensitykmkm2_5',
+            pane: 'pane_RoadDensitykmkm2_5',
+            onEachFeature: pop_RoadDensitykmkm2_5,
+            style: style_RoadDensitykmkm2_5_0,
         });
-        bounds_group.addLayer(layer_RoadDensitykmkm2_3);
-        map.addLayer(layer_RoadDensitykmkm2_3);
-        function pop_ExistingHedgerow_4(feature, layer) {
+        bounds_group.addLayer(layer_RoadDensitykmkm2_5);
+        map.addLayer(layer_RoadDensitykmkm2_5);
+        function pop_ExistingHedgerow_6(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -786,7 +1115,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -822,8 +1151,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -849,10 +1178,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_ExistingHedgerow_4_0(feature) {
+        function style_ExistingHedgerow_6_0(feature) {
             if (feature.properties['Existing_Hedgerow_Percentage'] >= 0.000000 && feature.properties['Existing_Hedgerow_Percentage'] <= 0.360000 ) {
                 return {
-                pane: 'pane_ExistingHedgerow_4',
+                pane: 'pane_ExistingHedgerow_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -867,7 +1196,7 @@
             }
             if (feature.properties['Existing_Hedgerow_Percentage'] >= 0.360000 && feature.properties['Existing_Hedgerow_Percentage'] <= 0.990000 ) {
                 return {
-                pane: 'pane_ExistingHedgerow_4',
+                pane: 'pane_ExistingHedgerow_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -882,7 +1211,7 @@
             }
             if (feature.properties['Existing_Hedgerow_Percentage'] >= 0.990000 && feature.properties['Existing_Hedgerow_Percentage'] <= 1.430000 ) {
                 return {
-                pane: 'pane_ExistingHedgerow_4',
+                pane: 'pane_ExistingHedgerow_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -897,7 +1226,7 @@
             }
             if (feature.properties['Existing_Hedgerow_Percentage'] >= 1.430000 && feature.properties['Existing_Hedgerow_Percentage'] <= 1.780000 ) {
                 return {
-                pane: 'pane_ExistingHedgerow_4',
+                pane: 'pane_ExistingHedgerow_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -912,7 +1241,7 @@
             }
             if (feature.properties['Existing_Hedgerow_Percentage'] >= 1.780000 && feature.properties['Existing_Hedgerow_Percentage'] <= 1.970000 ) {
                 return {
-                pane: 'pane_ExistingHedgerow_4',
+                pane: 'pane_ExistingHedgerow_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -926,21 +1255,21 @@
             }
             }
         }
-        map.createPane('pane_ExistingHedgerow_4');
-        map.getPane('pane_ExistingHedgerow_4').style.zIndex = 404;
-        map.getPane('pane_ExistingHedgerow_4').style['mix-blend-mode'] = 'normal';
-        var layer_ExistingHedgerow_4 = new L.geoJson(json_ExistingHedgerow_4, {
+        map.createPane('pane_ExistingHedgerow_6');
+        map.getPane('pane_ExistingHedgerow_6').style.zIndex = 406;
+        map.getPane('pane_ExistingHedgerow_6').style['mix-blend-mode'] = 'normal';
+        var layer_ExistingHedgerow_6 = new L.geoJson(json_ExistingHedgerow_6, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_ExistingHedgerow_4',
-            layerName: 'layer_ExistingHedgerow_4',
-            pane: 'pane_ExistingHedgerow_4',
-            onEachFeature: pop_ExistingHedgerow_4,
-            style: style_ExistingHedgerow_4_0,
+            dataVar: 'json_ExistingHedgerow_6',
+            layerName: 'layer_ExistingHedgerow_6',
+            pane: 'pane_ExistingHedgerow_6',
+            onEachFeature: pop_ExistingHedgerow_6,
+            style: style_ExistingHedgerow_6_0,
         });
-        bounds_group.addLayer(layer_ExistingHedgerow_4);
-        map.addLayer(layer_ExistingHedgerow_4);
-        function pop_PlantableArea_5(feature, layer) {
+        bounds_group.addLayer(layer_ExistingHedgerow_6);
+        map.addLayer(layer_ExistingHedgerow_6);
+        function pop_PlantableArea_7(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -963,7 +1292,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -999,8 +1328,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -1026,10 +1355,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_PlantableArea_5_0(feature) {
+        function style_PlantableArea_7_0(feature) {
             if (feature.properties['Plantable_Area_Percentage'] >= 0.000000 && feature.properties['Plantable_Area_Percentage'] <= 20.000000 ) {
                 return {
-                pane: 'pane_PlantableArea_5',
+                pane: 'pane_PlantableArea_7',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1044,7 +1373,7 @@
             }
             if (feature.properties['Plantable_Area_Percentage'] >= 20.000000 && feature.properties['Plantable_Area_Percentage'] <= 40.000000 ) {
                 return {
-                pane: 'pane_PlantableArea_5',
+                pane: 'pane_PlantableArea_7',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1059,7 +1388,7 @@
             }
             if (feature.properties['Plantable_Area_Percentage'] >= 40.000000 && feature.properties['Plantable_Area_Percentage'] <= 60.000000 ) {
                 return {
-                pane: 'pane_PlantableArea_5',
+                pane: 'pane_PlantableArea_7',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1074,7 +1403,7 @@
             }
             if (feature.properties['Plantable_Area_Percentage'] >= 60.000000 && feature.properties['Plantable_Area_Percentage'] <= 80.000000 ) {
                 return {
-                pane: 'pane_PlantableArea_5',
+                pane: 'pane_PlantableArea_7',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1089,7 +1418,7 @@
             }
             if (feature.properties['Plantable_Area_Percentage'] >= 80.000000 && feature.properties['Plantable_Area_Percentage'] <= 92.490000 ) {
                 return {
-                pane: 'pane_PlantableArea_5',
+                pane: 'pane_PlantableArea_7',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1103,21 +1432,21 @@
             }
             }
         }
-        map.createPane('pane_PlantableArea_5');
-        map.getPane('pane_PlantableArea_5').style.zIndex = 405;
-        map.getPane('pane_PlantableArea_5').style['mix-blend-mode'] = 'normal';
-        var layer_PlantableArea_5 = new L.geoJson(json_PlantableArea_5, {
+        map.createPane('pane_PlantableArea_7');
+        map.getPane('pane_PlantableArea_7').style.zIndex = 407;
+        map.getPane('pane_PlantableArea_7').style['mix-blend-mode'] = 'normal';
+        var layer_PlantableArea_7 = new L.geoJson(json_PlantableArea_7, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_PlantableArea_5',
-            layerName: 'layer_PlantableArea_5',
-            pane: 'pane_PlantableArea_5',
-            onEachFeature: pop_PlantableArea_5,
-            style: style_PlantableArea_5_0,
+            dataVar: 'json_PlantableArea_7',
+            layerName: 'layer_PlantableArea_7',
+            pane: 'pane_PlantableArea_7',
+            onEachFeature: pop_PlantableArea_7,
+            style: style_PlantableArea_7_0,
         });
-        bounds_group.addLayer(layer_PlantableArea_5);
-        map.addLayer(layer_PlantableArea_5);
-        function pop_PlantableAreakm2_6(feature, layer) {
+        bounds_group.addLayer(layer_PlantableArea_7);
+        map.addLayer(layer_PlantableArea_7);
+        function pop_PlantableAreakm2_8(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -1140,7 +1469,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -1176,8 +1505,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -1203,10 +1532,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_PlantableAreakm2_6_0(feature) {
+        function style_PlantableAreakm2_8_0(feature) {
             if (feature.properties['Plantable_Area_km2'] >= 0.000000 && feature.properties['Plantable_Area_km2'] <= 500.000000 ) {
                 return {
-                pane: 'pane_PlantableAreakm2_6',
+                pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1221,7 +1550,7 @@
             }
             if (feature.properties['Plantable_Area_km2'] >= 500.000000 && feature.properties['Plantable_Area_km2'] <= 1000.000000 ) {
                 return {
-                pane: 'pane_PlantableAreakm2_6',
+                pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1236,7 +1565,7 @@
             }
             if (feature.properties['Plantable_Area_km2'] >= 1000.000000 && feature.properties['Plantable_Area_km2'] <= 1500.000000 ) {
                 return {
-                pane: 'pane_PlantableAreakm2_6',
+                pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1251,7 +1580,7 @@
             }
             if (feature.properties['Plantable_Area_km2'] >= 1500.000000 && feature.properties['Plantable_Area_km2'] <= 2000.000000 ) {
                 return {
-                pane: 'pane_PlantableAreakm2_6',
+                pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1266,7 +1595,7 @@
             }
             if (feature.properties['Plantable_Area_km2'] >= 2000.000000 && feature.properties['Plantable_Area_km2'] <= 2500.000000 ) {
                 return {
-                pane: 'pane_PlantableAreakm2_6',
+                pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1281,7 +1610,7 @@
             }
             if (feature.properties['Plantable_Area_km2'] >= 2500.000000 && feature.properties['Plantable_Area_km2'] <= 3000.000000 ) {
                 return {
-                pane: 'pane_PlantableAreakm2_6',
+                pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1296,7 +1625,7 @@
             }
             if (feature.properties['Plantable_Area_km2'] >= 3000.000000 && feature.properties['Plantable_Area_km2'] <= 3378.720000 ) {
                 return {
-                pane: 'pane_PlantableAreakm2_6',
+                pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1310,21 +1639,21 @@
             }
             }
         }
-        map.createPane('pane_PlantableAreakm2_6');
-        map.getPane('pane_PlantableAreakm2_6').style.zIndex = 406;
-        map.getPane('pane_PlantableAreakm2_6').style['mix-blend-mode'] = 'normal';
-        var layer_PlantableAreakm2_6 = new L.geoJson(json_PlantableAreakm2_6, {
+        map.createPane('pane_PlantableAreakm2_8');
+        map.getPane('pane_PlantableAreakm2_8').style.zIndex = 408;
+        map.getPane('pane_PlantableAreakm2_8').style['mix-blend-mode'] = 'normal';
+        var layer_PlantableAreakm2_8 = new L.geoJson(json_PlantableAreakm2_8, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_PlantableAreakm2_6',
-            layerName: 'layer_PlantableAreakm2_6',
-            pane: 'pane_PlantableAreakm2_6',
-            onEachFeature: pop_PlantableAreakm2_6,
-            style: style_PlantableAreakm2_6_0,
+            dataVar: 'json_PlantableAreakm2_8',
+            layerName: 'layer_PlantableAreakm2_8',
+            pane: 'pane_PlantableAreakm2_8',
+            onEachFeature: pop_PlantableAreakm2_8,
+            style: style_PlantableAreakm2_8_0,
         });
-        bounds_group.addLayer(layer_PlantableAreakm2_6);
-        map.addLayer(layer_PlantableAreakm2_6);
-        function pop_HedgerowTargetkm2_7(feature, layer) {
+        bounds_group.addLayer(layer_PlantableAreakm2_8);
+        map.addLayer(layer_PlantableAreakm2_8);
+        function pop_HedgerowTargetkm_9(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -1347,7 +1676,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -1383,8 +1712,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -1410,10 +1739,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_HedgerowTargetkm2_7_0(feature) {
+        function style_HedgerowTargetkm_9_0(feature) {
             if (feature.properties['Hedgerow_target'] >= 0.000000 && feature.properties['Hedgerow_target'] <= 200.000000 ) {
                 return {
-                pane: 'pane_HedgerowTargetkm2_7',
+                pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1428,7 +1757,7 @@
             }
             if (feature.properties['Hedgerow_target'] >= 200.000000 && feature.properties['Hedgerow_target'] <= 400.000000 ) {
                 return {
-                pane: 'pane_HedgerowTargetkm2_7',
+                pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1443,7 +1772,7 @@
             }
             if (feature.properties['Hedgerow_target'] >= 400.000000 && feature.properties['Hedgerow_target'] <= 600.000000 ) {
                 return {
-                pane: 'pane_HedgerowTargetkm2_7',
+                pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1458,7 +1787,7 @@
             }
             if (feature.properties['Hedgerow_target'] >= 600.000000 && feature.properties['Hedgerow_target'] <= 800.000000 ) {
                 return {
-                pane: 'pane_HedgerowTargetkm2_7',
+                pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1473,7 +1802,7 @@
             }
             if (feature.properties['Hedgerow_target'] >= 800.000000 && feature.properties['Hedgerow_target'] <= 926.150000 ) {
                 return {
-                pane: 'pane_HedgerowTargetkm2_7',
+                pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1487,21 +1816,21 @@
             }
             }
         }
-        map.createPane('pane_HedgerowTargetkm2_7');
-        map.getPane('pane_HedgerowTargetkm2_7').style.zIndex = 407;
-        map.getPane('pane_HedgerowTargetkm2_7').style['mix-blend-mode'] = 'normal';
-        var layer_HedgerowTargetkm2_7 = new L.geoJson(json_HedgerowTargetkm2_7, {
+        map.createPane('pane_HedgerowTargetkm_9');
+        map.getPane('pane_HedgerowTargetkm_9').style.zIndex = 409;
+        map.getPane('pane_HedgerowTargetkm_9').style['mix-blend-mode'] = 'normal';
+        var layer_HedgerowTargetkm_9 = new L.geoJson(json_HedgerowTargetkm_9, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_HedgerowTargetkm2_7',
-            layerName: 'layer_HedgerowTargetkm2_7',
-            pane: 'pane_HedgerowTargetkm2_7',
-            onEachFeature: pop_HedgerowTargetkm2_7,
-            style: style_HedgerowTargetkm2_7_0,
+            dataVar: 'json_HedgerowTargetkm_9',
+            layerName: 'layer_HedgerowTargetkm_9',
+            pane: 'pane_HedgerowTargetkm_9',
+            onEachFeature: pop_HedgerowTargetkm_9,
+            style: style_HedgerowTargetkm_9_0,
         });
-        bounds_group.addLayer(layer_HedgerowTargetkm2_7);
-        map.addLayer(layer_HedgerowTargetkm2_7);
-        function pop_HedgerowPriorityScore_8(feature, layer) {
+        bounds_group.addLayer(layer_HedgerowTargetkm_9);
+        map.addLayer(layer_HedgerowTargetkm_9);
+        function pop_HedgerowPriorityScore_10(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -1524,7 +1853,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -1560,8 +1889,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -1587,10 +1916,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_HedgerowPriorityScore_8_0(feature) {
+        function style_HedgerowPriorityScore_10_0(feature) {
             if (feature.properties['Hedgerow_Score'] >= 1.000000 && feature.properties['Hedgerow_Score'] <= 1.000000 ) {
                 return {
-                pane: 'pane_HedgerowPriorityScore_8',
+                pane: 'pane_HedgerowPriorityScore_10',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1605,7 +1934,7 @@
             }
             if (feature.properties['Hedgerow_Score'] >= 1.000000 && feature.properties['Hedgerow_Score'] <= 2.000000 ) {
                 return {
-                pane: 'pane_HedgerowPriorityScore_8',
+                pane: 'pane_HedgerowPriorityScore_10',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1620,7 +1949,7 @@
             }
             if (feature.properties['Hedgerow_Score'] >= 2.000000 && feature.properties['Hedgerow_Score'] <= 3.000000 ) {
                 return {
-                pane: 'pane_HedgerowPriorityScore_8',
+                pane: 'pane_HedgerowPriorityScore_10',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1634,21 +1963,21 @@
             }
             }
         }
-        map.createPane('pane_HedgerowPriorityScore_8');
-        map.getPane('pane_HedgerowPriorityScore_8').style.zIndex = 408;
-        map.getPane('pane_HedgerowPriorityScore_8').style['mix-blend-mode'] = 'normal';
-        var layer_HedgerowPriorityScore_8 = new L.geoJson(json_HedgerowPriorityScore_8, {
+        map.createPane('pane_HedgerowPriorityScore_10');
+        map.getPane('pane_HedgerowPriorityScore_10').style.zIndex = 410;
+        map.getPane('pane_HedgerowPriorityScore_10').style['mix-blend-mode'] = 'normal';
+        var layer_HedgerowPriorityScore_10 = new L.geoJson(json_HedgerowPriorityScore_10, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_HedgerowPriorityScore_8',
-            layerName: 'layer_HedgerowPriorityScore_8',
-            pane: 'pane_HedgerowPriorityScore_8',
-            onEachFeature: pop_HedgerowPriorityScore_8,
-            style: style_HedgerowPriorityScore_8_0,
+            dataVar: 'json_HedgerowPriorityScore_10',
+            layerName: 'layer_HedgerowPriorityScore_10',
+            pane: 'pane_HedgerowPriorityScore_10',
+            onEachFeature: pop_HedgerowPriorityScore_10,
+            style: style_HedgerowPriorityScore_10_0,
         });
-        bounds_group.addLayer(layer_HedgerowPriorityScore_8);
-        map.addLayer(layer_HedgerowPriorityScore_8);
-        function pop_HedgerowManagement_9(feature, layer) {
+        bounds_group.addLayer(layer_HedgerowPriorityScore_10);
+        map.addLayer(layer_HedgerowPriorityScore_10);
+        function pop_HedgerowManagement_11(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -1671,7 +2000,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -1707,8 +2036,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -1734,10 +2063,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_HedgerowManagement_9_0(feature) {
+        function style_HedgerowManagement_11_0(feature) {
             if (feature.properties['Management'] >= 1.000000 && feature.properties['Management'] <= 1.000000 ) {
                 return {
-                pane: 'pane_HedgerowManagement_9',
+                pane: 'pane_HedgerowManagement_11',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1752,7 +2081,7 @@
             }
             if (feature.properties['Management'] >= 1.000000 && feature.properties['Management'] <= 2.000000 ) {
                 return {
-                pane: 'pane_HedgerowManagement_9',
+                pane: 'pane_HedgerowManagement_11',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1767,7 +2096,7 @@
             }
             if (feature.properties['Management'] >= 2.000000 && feature.properties['Management'] <= 3.000000 ) {
                 return {
-                pane: 'pane_HedgerowManagement_9',
+                pane: 'pane_HedgerowManagement_11',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1781,21 +2110,21 @@
             }
             }
         }
-        map.createPane('pane_HedgerowManagement_9');
-        map.getPane('pane_HedgerowManagement_9').style.zIndex = 409;
-        map.getPane('pane_HedgerowManagement_9').style['mix-blend-mode'] = 'normal';
-        var layer_HedgerowManagement_9 = new L.geoJson(json_HedgerowManagement_9, {
+        map.createPane('pane_HedgerowManagement_11');
+        map.getPane('pane_HedgerowManagement_11').style.zIndex = 411;
+        map.getPane('pane_HedgerowManagement_11').style['mix-blend-mode'] = 'normal';
+        var layer_HedgerowManagement_11 = new L.geoJson(json_HedgerowManagement_11, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_HedgerowManagement_9',
-            layerName: 'layer_HedgerowManagement_9',
-            pane: 'pane_HedgerowManagement_9',
-            onEachFeature: pop_HedgerowManagement_9,
-            style: style_HedgerowManagement_9_0,
+            dataVar: 'json_HedgerowManagement_11',
+            layerName: 'layer_HedgerowManagement_11',
+            pane: 'pane_HedgerowManagement_11',
+            onEachFeature: pop_HedgerowManagement_11,
+            style: style_HedgerowManagement_11_0,
         });
-        bounds_group.addLayer(layer_HedgerowManagement_9);
-        map.addLayer(layer_HedgerowManagement_9);
-        function pop_PolicySupport_10(feature, layer) {
+        bounds_group.addLayer(layer_HedgerowManagement_11);
+        map.addLayer(layer_HedgerowManagement_11);
+        function pop_PolicySupport_12(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -1818,7 +2147,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -1854,8 +2183,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -1881,10 +2210,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_PolicySupport_10_0(feature) {
+        function style_PolicySupport_12_0(feature) {
             if (feature.properties['SEO'] >= 1.000000 && feature.properties['SEO'] <= 1.000000 ) {
                 return {
-                pane: 'pane_PolicySupport_10',
+                pane: 'pane_PolicySupport_12',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1899,7 +2228,7 @@
             }
             if (feature.properties['SEO'] >= 1.000000 && feature.properties['SEO'] <= 2.000000 ) {
                 return {
-                pane: 'pane_PolicySupport_10',
+                pane: 'pane_PolicySupport_12',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1914,7 +2243,7 @@
             }
             if (feature.properties['SEO'] >= 2.000000 && feature.properties['SEO'] <= 3.000000 ) {
                 return {
-                pane: 'pane_PolicySupport_10',
+                pane: 'pane_PolicySupport_12',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1928,21 +2257,21 @@
             }
             }
         }
-        map.createPane('pane_PolicySupport_10');
-        map.getPane('pane_PolicySupport_10').style.zIndex = 410;
-        map.getPane('pane_PolicySupport_10').style['mix-blend-mode'] = 'normal';
-        var layer_PolicySupport_10 = new L.geoJson(json_PolicySupport_10, {
+        map.createPane('pane_PolicySupport_12');
+        map.getPane('pane_PolicySupport_12').style.zIndex = 412;
+        map.getPane('pane_PolicySupport_12').style['mix-blend-mode'] = 'normal';
+        var layer_PolicySupport_12 = new L.geoJson(json_PolicySupport_12, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_PolicySupport_10',
-            layerName: 'layer_PolicySupport_10',
-            pane: 'pane_PolicySupport_10',
-            onEachFeature: pop_PolicySupport_10,
-            style: style_PolicySupport_10_0,
+            dataVar: 'json_PolicySupport_12',
+            layerName: 'layer_PolicySupport_12',
+            pane: 'pane_PolicySupport_12',
+            onEachFeature: pop_PolicySupport_12,
+            style: style_PolicySupport_12_0,
         });
-        bounds_group.addLayer(layer_PolicySupport_10);
-        map.addLayer(layer_PolicySupport_10);
-        function pop_ExistingHedgerowCondition_11(feature, layer) {
+        bounds_group.addLayer(layer_PolicySupport_12);
+        map.addLayer(layer_PolicySupport_12);
+        function pop_ExistingHedgerowCondition_13(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -1965,7 +2294,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -2001,8 +2330,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -2028,10 +2357,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_ExistingHedgerowCondition_11_0(feature) {
+        function style_ExistingHedgerowCondition_13_0(feature) {
             if (feature.properties['Existing'] >= 1.000000 && feature.properties['Existing'] <= 1.000000 ) {
                 return {
-                pane: 'pane_ExistingHedgerowCondition_11',
+                pane: 'pane_ExistingHedgerowCondition_13',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -2046,7 +2375,7 @@
             }
             if (feature.properties['Existing'] >= 1.000000 && feature.properties['Existing'] <= 2.000000 ) {
                 return {
-                pane: 'pane_ExistingHedgerowCondition_11',
+                pane: 'pane_ExistingHedgerowCondition_13',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -2061,7 +2390,7 @@
             }
             if (feature.properties['Existing'] >= 2.000000 && feature.properties['Existing'] <= 3.000000 ) {
                 return {
-                pane: 'pane_ExistingHedgerowCondition_11',
+                pane: 'pane_ExistingHedgerowCondition_13',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -2075,21 +2404,21 @@
             }
             }
         }
-        map.createPane('pane_ExistingHedgerowCondition_11');
-        map.getPane('pane_ExistingHedgerowCondition_11').style.zIndex = 411;
-        map.getPane('pane_ExistingHedgerowCondition_11').style['mix-blend-mode'] = 'normal';
-        var layer_ExistingHedgerowCondition_11 = new L.geoJson(json_ExistingHedgerowCondition_11, {
+        map.createPane('pane_ExistingHedgerowCondition_13');
+        map.getPane('pane_ExistingHedgerowCondition_13').style.zIndex = 413;
+        map.getPane('pane_ExistingHedgerowCondition_13').style['mix-blend-mode'] = 'normal';
+        var layer_ExistingHedgerowCondition_13 = new L.geoJson(json_ExistingHedgerowCondition_13, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_ExistingHedgerowCondition_11',
-            layerName: 'layer_ExistingHedgerowCondition_11',
-            pane: 'pane_ExistingHedgerowCondition_11',
-            onEachFeature: pop_ExistingHedgerowCondition_11,
-            style: style_ExistingHedgerowCondition_11_0,
+            dataVar: 'json_ExistingHedgerowCondition_13',
+            layerName: 'layer_ExistingHedgerowCondition_13',
+            pane: 'pane_ExistingHedgerowCondition_13',
+            onEachFeature: pop_ExistingHedgerowCondition_13,
+            style: style_ExistingHedgerowCondition_13_0,
         });
-        bounds_group.addLayer(layer_ExistingHedgerowCondition_11);
-        map.addLayer(layer_ExistingHedgerowCondition_11);
-        function pop_HistoricHedgerowCover_12(feature, layer) {
+        bounds_group.addLayer(layer_ExistingHedgerowCondition_13);
+        map.addLayer(layer_ExistingHedgerowCondition_13);
+        function pop_HistoricHedgerowCover_14(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -2112,7 +2441,7 @@
                         <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow Cover</th>\
+                        <th scope="row">Existing Hedgerow Condition</th>\
                         <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -2148,8 +2477,8 @@
                         <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Field Size (Ha)</th>\
-                        <td>' + (feature.properties['Field_Size_Ha'] !== null ? autolinker.link(feature.properties['Field_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Average Farm Size (Ha)</th>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -2175,10 +2504,10 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_HistoricHedgerowCover_12_0(feature) {
+        function style_HistoricHedgerowCover_14_0(feature) {
             if (feature.properties['Historic'] >= 1.000000 && feature.properties['Historic'] <= 1.000000 ) {
                 return {
-                pane: 'pane_HistoricHedgerowCover_12',
+                pane: 'pane_HistoricHedgerowCover_14',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -2193,7 +2522,7 @@
             }
             if (feature.properties['Historic'] >= 1.000000 && feature.properties['Historic'] <= 2.000000 ) {
                 return {
-                pane: 'pane_HistoricHedgerowCover_12',
+                pane: 'pane_HistoricHedgerowCover_14',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -2208,7 +2537,7 @@
             }
             if (feature.properties['Historic'] >= 2.000000 && feature.properties['Historic'] <= 3.000000 ) {
                 return {
-                pane: 'pane_HistoricHedgerowCover_12',
+                pane: 'pane_HistoricHedgerowCover_14',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -2222,27 +2551,27 @@
             }
             }
         }
-        map.createPane('pane_HistoricHedgerowCover_12');
-        map.getPane('pane_HistoricHedgerowCover_12').style.zIndex = 412;
-        map.getPane('pane_HistoricHedgerowCover_12').style['mix-blend-mode'] = 'normal';
-        var layer_HistoricHedgerowCover_12 = new L.geoJson(json_HistoricHedgerowCover_12, {
+        map.createPane('pane_HistoricHedgerowCover_14');
+        map.getPane('pane_HistoricHedgerowCover_14').style.zIndex = 414;
+        map.getPane('pane_HistoricHedgerowCover_14').style['mix-blend-mode'] = 'normal';
+        var layer_HistoricHedgerowCover_14 = new L.geoJson(json_HistoricHedgerowCover_14, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_HistoricHedgerowCover_12',
-            layerName: 'layer_HistoricHedgerowCover_12',
-            pane: 'pane_HistoricHedgerowCover_12',
-            onEachFeature: pop_HistoricHedgerowCover_12,
-            style: style_HistoricHedgerowCover_12_0,
+            dataVar: 'json_HistoricHedgerowCover_14',
+            layerName: 'layer_HistoricHedgerowCover_14',
+            pane: 'pane_HistoricHedgerowCover_14',
+            onEachFeature: pop_HistoricHedgerowCover_14,
+            style: style_HistoricHedgerowCover_14_0,
         });
-        bounds_group.addLayer(layer_HistoricHedgerowCover_12);
-        map.addLayer(layer_HistoricHedgerowCover_12);
+        bounds_group.addLayer(layer_HistoricHedgerowCover_14);
+        map.addLayer(layer_HistoricHedgerowCover_14);
         var baseMaps = {
-        'Historic Hedgerow Cover<br /><table><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_12_1Similartohistoriclevels0.png" /></td><td>1 - Similar to historic levels</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_12_1Lossbutsomerestoration1.png" /></td><td>1 - Loss but some restoration</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_12_2Lossandlittlerestoration2.png" /></td><td>2 - Loss and little restoration</td></tr></table>': layer_HistoricHedgerowCover_12,'Existing Hedgerow Condition<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_11_1Goodcondition0.png" /></td><td>1 - Good condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_11_2Averagecondition1.png" /></td><td>2 - Average condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_11_3Poorcondition2.png" /></td><td>3 - Poor condition</td></tr></table>': layer_ExistingHedgerowCondition_11,'Policy Support<br /><table><tr><td style="text-align: center;"><img src="legend/PolicySupport_10_1Nopolicysupport0.png" /></td><td>1 - No policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_10_2Somepolicysupport1.png" /></td><td>2 - Some policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_10_3Majorpolicysupport2.png" /></td><td>3 - Major policy support</td></tr></table>': layer_PolicySupport_10,'Hedgerow Management<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_9_1Lessthan20inschemes0.png" /></td><td>1 - Less than 20% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_9_2Between2030inschemes1.png" /></td><td>2 - Between 20-30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_9_3Over30inschemes2.png" /></td><td>3 - Over 30% in schemes</td></tr></table>': layer_HedgerowManagement_9,'Hedgerow Priority Score<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_8_1LowPriority0.png" /></td><td>1 - Low Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_8_2MediumPriority1.png" /></td><td>2 - Medium Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_8_3HighPriority2.png" /></td><td>3 - High Priority</td></tr></table>': layer_HedgerowPriorityScore_8,'Hedgerow Target (km2)<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm2_7_02000.png" /></td><td>0 - 200</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm2_7_2004001.png" /></td><td>200 - 400</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm2_7_4006002.png" /></td><td>400 - 600</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm2_7_6008003.png" /></td><td>600 - 800</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm2_7_8009264.png" /></td><td>800 - 926</td></tr></table>': layer_HedgerowTargetkm2_7,'Plantable Area (km2)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_6_05000.png" /></td><td>0 - 500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_6_50010001.png" /></td><td>500 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_6_100015002.png" /></td><td>1000 - 1500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_6_150020003.png" /></td><td>1500 - 2000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_6_200025004.png" /></td><td>2000 - 2500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_6_250030005.png" /></td><td>2500 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_6_300033796.png" /></td><td>3000 - 3379</td></tr></table>': layer_PlantableAreakm2_6,'Plantable Area (%)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableArea_5_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_5_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_5_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_5_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_5_80924.png" /></td><td>80 - 92</td></tr></table>': layer_PlantableArea_5,'Existing Hedgerow (%)<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_4_00360.png" /></td><td>0 - 0.36</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_4_0360991.png" /></td><td>0.36 - 0.99</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_4_0991432.png" /></td><td>0.99 - 1.43</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_4_1431783.png" /></td><td>1.43 - 1.78</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_4_1781974.png" /></td><td>1.78 - 1.97</td></tr></table>': layer_ExistingHedgerow_4,'Road Density (km/km2)<br /><table><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_3_030.png" /></td><td>0 - 3</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_3_351.png" /></td><td>3 - 5</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_3_5102.png" /></td><td>5 - 10</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_3_101583.png" /></td><td>10 - 15.8</td></tr></table>': layer_RoadDensitykmkm2_3,'Disturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_60803.png" /></td><td>60 - 80</td></tr></table>': layer_DisturbedLand_2,'Undisturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_801004.png" /></td><td>80 - 100</td></tr></table>': layer_UndisturbedLand_1,'Urban Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_010.png" /></td><td>0 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_262.png" /></td><td>2 - 6</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_6173.png" /></td><td>6 - 17</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_171004.png" /></td><td>17 - 100</td></tr></table>': layer_UrbanLand_0
+            'Historic Hedgerow Cover<br /><table><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Similartohistoriclevels0.png" /></td><td>1 - Similar to historic levels</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Lossbutsomerestoration1.png" /></td><td>1 - Loss but some restoration</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_2Lossandlittlerestoration2.png" /></td><td>2 - Loss and little restoration</td></tr></table>': layer_HistoricHedgerowCover_14,'Existing Hedgerow Condition<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_1Goodcondition0.png" /></td><td>1 - Good condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_2Averagecondition1.png" /></td><td>2 - Average condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_3Poorcondition2.png" /></td><td>3 - Poor condition</td></tr></table>': layer_ExistingHedgerowCondition_13,'Policy Support<br /><table><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_1Nopolicysupport0.png" /></td><td>1 - No policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_2Somepolicysupport1.png" /></td><td>2 - Some policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_3Majorpolicysupport2.png" /></td><td>3 - Major policy support</td></tr></table>': layer_PolicySupport_12,'Hedgerow Management<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_1Lessthan20inschemes0.png" /></td><td>1 - Less than 20% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_2Between2030inschemes1.png" /></td><td>2 - Between 20-30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_3Over30inschemes2.png" /></td><td>3 - Over 30% in schemes</td></tr></table>': layer_HedgerowManagement_11,'Hedgerow Priority Score<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_1LowPriority0.png" /></td><td>1 - Low Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_2MediumPriority1.png" /></td><td>2 - Medium Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_3HighPriority2.png" /></td><td>3 - High Priority</td></tr></table>': layer_HedgerowPriorityScore_10,'Hedgerow Target (km)<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_02000.png" /></td><td>0 - 200</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_2004001.png" /></td><td>200 - 400</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_4006002.png" /></td><td>400 - 600</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_6008003.png" /></td><td>600 - 800</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_8009264.png" /></td><td>800 - 926</td></tr></table>': layer_HedgerowTargetkm_9,'Plantable Area (km2)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_05000.png" /></td><td>0 - 500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_50010001.png" /></td><td>500 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_100015002.png" /></td><td>1000 - 1500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_150020003.png" /></td><td>1500 - 2000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_200025004.png" /></td><td>2000 - 2500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_250030005.png" /></td><td>2500 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_300033796.png" /></td><td>3000 - 3379</td></tr></table>': layer_PlantableAreakm2_8,'Plantable Area (%)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_80924.png" /></td><td>80 - 92</td></tr></table>': layer_PlantableArea_7,'Existing Hedgerow (%)<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_00360.png" /></td><td>0 - 0.36</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_0360991.png" /></td><td>0.36 - 0.99</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_0991432.png" /></td><td>0.99 - 1.43</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_1431783.png" /></td><td>1.43 - 1.78</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_1781974.png" /></td><td>1.78 - 1.97</td></tr></table>': layer_ExistingHedgerow_6,'Road Density (km/km2)<br /><table><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_030.png" /></td><td>0 - 3</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_351.png" /></td><td>3 - 5</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_5102.png" /></td><td>5 - 10</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_101583.png" /></td><td>10 - 15.8</td></tr></table>': layer_RoadDensitykmkm2_5,'Average Farm Size (Ha)<br /><table><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_1000.png" /></td><td>100<</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_501001.png" /></td><td>50-100</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_502.png" /></td><td>50></td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_NA3.png" /></td><td>N/A</td></tr></table>': layer_AverageFarmSizeHa_4,'Dominant Agriculture<br /><table><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableCereal0.png" /></td><td>Arable (Cereal)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableHorticulture1.png" /></td><td>Arable (Horticulture)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_NA2.png" /></td><td>N/A</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_Pasture3.png" /></td><td>Pasture</td></tr></table>': layer_DominantAgriculture_3,'Disturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_60803.png" /></td><td>60 - 80</td></tr></table>': layer_DisturbedLand_2,'Undisturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_801004.png" /></td><td>80 - 100</td></tr></table>': layer_UndisturbedLand_1,'Urban Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_010.png" /></td><td>0 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_262.png" /></td><td>2 - 6</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_6173.png" /></td><td>6 - 17</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_171004.png" /></td><td>17 - 100</td></tr></table>': layer_UrbanLand_0
         };
         L.control.layers(baseMaps,{},{collapsed:false}).addTo(map);
         setBounds();
         map.addControl(new L.Control.Search({
-            layer: layer_HistoricHedgerowCover_12,
+            layer: layer_HistoricHedgerowCover_14,
             initial: false,
             hideMarkerOnCollapse: true,
             propertyName: 'NCA_Name'}));
