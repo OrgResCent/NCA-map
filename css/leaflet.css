@@ -377,7 +377,17 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	overflow-y: scroll;
 	overflow-x: hidden;
 	padding-right: 5px;
+	scrollbar-color: #5a5a5a #fefefe;
+	scrollbar-width: thin;
 	}
+.leaflet-control-layers-scrollbar::-webkit-scrollbar {
+	background-color: #fefefe;
+	width: 5px;
+}
+.leaflet-control-layers-scrollbar::-webkit-scrollbar-thumb {
+	background-color: #5a5a5a;
+	border-radius: 10px; 
+}
 .leaflet-control-layers-selector {
 	margin-top: 2px;
 	position: relative;
