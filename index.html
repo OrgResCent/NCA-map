@@ -33,7 +33,7 @@
                 and which areas of the UK should be prioritised for extensive hedgerow planting.</p>
             <p>A variety of maps can be chosen using the right-hand side panel, while specific figures can be brought up by clicking on an idividual National Character Area (NCA).
                 In addition NCAs can be searched for by name by clicking on the search icon to the left.</p>
-            </div>
+        </div>
         <div id="map">
         </div>
         <script src="js/qgis2web_expressions.js"></script>
@@ -79,9 +79,9 @@
         }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[49.29032999097177,-10.451207941905858],[55.68240788830231,4.069797077801277]]);
+        }).fitBounds([[49.60271930413412,-9.801813977683729],[55.958035156767956,4.826114771163912]]);
         var hash = new L.Hash(map);
-        map.attributionControl.setPrefix('<a href="https://www.organicresearchcentre.com/" title="Organic Research Centre" target="_blank">ORC</a> &middot<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
@@ -142,11 +142,11 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td colspan="2">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -319,7 +319,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -460,74 +460,74 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Refactored_Historic'] !== null ? autolinker.link(feature.properties['Refactored_Historic'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Refactored_Existing'] !== null ? autolinker.link(feature.properties['Refactored_Existing'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['Refactored_SEO'] !== null ? autolinker.link(feature.properties['Refactored_SEO'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Refactored_Management'] !== null ? autolinker.link(feature.properties['Refactored_Management'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Hedgerow Management</th>\
+                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Refactored_Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Refactored_Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Refactored_Hedgerow_target'] !== null ? autolinker.link(feature.properties['Refactored_Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Refactored_Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Refactored_Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Refactored_Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow (%)</th>\
-                        <td>' + (feature.properties['Refactored_Existing_Hedgerow_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Existing_Hedgerow_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Existing_Hedgerow_Percentage'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Refactored_Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Refactored_Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Refactored_Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Refactored_Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Refactored_Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Refactored_Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Refactored_Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Refactored_Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Refactored_Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Refactored_Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
         function style_DisturbedLand_2_0(feature) {
-            if (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] >= 0.000000 && feature.properties['Refactored_Intrusion_Disturbed_Percentage'] <= 20.000000 ) {
+            if (feature.properties['Intrusion_Disturbed_Percentage'] >= 0.000000 && feature.properties['Intrusion_Disturbed_Percentage'] <= 20.000000 ) {
                 return {
                 pane: 'pane_DisturbedLand_2',
                 opacity: 1,
@@ -542,7 +542,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] >= 20.000000 && feature.properties['Refactored_Intrusion_Disturbed_Percentage'] <= 40.000000 ) {
+            if (feature.properties['Intrusion_Disturbed_Percentage'] >= 20.000000 && feature.properties['Intrusion_Disturbed_Percentage'] <= 40.000000 ) {
                 return {
                 pane: 'pane_DisturbedLand_2',
                 opacity: 1,
@@ -557,7 +557,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] >= 40.000000 && feature.properties['Refactored_Intrusion_Disturbed_Percentage'] <= 60.000000 ) {
+            if (feature.properties['Intrusion_Disturbed_Percentage'] >= 40.000000 && feature.properties['Intrusion_Disturbed_Percentage'] <= 60.000000 ) {
                 return {
                 pane: 'pane_DisturbedLand_2',
                 opacity: 1,
@@ -572,7 +572,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Refactored_Intrusion_Disturbed_Percentage'] >= 60.000000 && feature.properties['Refactored_Intrusion_Disturbed_Percentage'] <= 80.000000 ) {
+            if (feature.properties['Intrusion_Disturbed_Percentage'] >= 60.000000 && feature.properties['Intrusion_Disturbed_Percentage'] <= 80.000000 ) {
                 return {
                 pane: 'pane_DisturbedLand_2',
                 opacity: 1,
@@ -658,7 +658,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -822,7 +822,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -986,7 +986,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -1017,7 +1017,7 @@
         }
 
         function style_RoadDensitykmkm2_5_0(feature) {
-            if (feature.properties['Road_Density_Percentage'] >= 0.000000 && feature.properties['Road_Density_Percentage'] <= 3.000000 ) {
+            if (feature.properties['Road_Density_km_km2'] >= 0.000000 && feature.properties['Road_Density_km_km2'] <= 3.000000 ) {
                 return {
                 pane: 'pane_RoadDensitykmkm2_5',
                 opacity: 1,
@@ -1032,7 +1032,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Road_Density_Percentage'] >= 3.000000 && feature.properties['Road_Density_Percentage'] <= 5.000000 ) {
+            if (feature.properties['Road_Density_km_km2'] >= 3.000000 && feature.properties['Road_Density_km_km2'] <= 5.000000 ) {
                 return {
                 pane: 'pane_RoadDensitykmkm2_5',
                 opacity: 1,
@@ -1047,7 +1047,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Road_Density_Percentage'] >= 5.000000 && feature.properties['Road_Density_Percentage'] <= 10.000000 ) {
+            if (feature.properties['Road_Density_km_km2'] >= 5.000000 && feature.properties['Road_Density_km_km2'] <= 10.000000 ) {
                 return {
                 pane: 'pane_RoadDensitykmkm2_5',
                 opacity: 1,
@@ -1062,7 +1062,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Road_Density_Percentage'] >= 10.000000 && feature.properties['Road_Density_Percentage'] <= 15.800000 ) {
+            if (feature.properties['Road_Density_km_km2'] >= 10.000000 && feature.properties['Road_Density_km_km2'] <= 15.800000 ) {
                 return {
                 pane: 'pane_RoadDensitykmkm2_5',
                 opacity: 1,
@@ -1148,7 +1148,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -1325,7 +1325,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -1502,7 +1502,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -1709,7 +1709,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -1740,7 +1740,7 @@
         }
 
         function style_HedgerowTargetkm_9_0(feature) {
-            if (feature.properties['Hedgerow_target'] >= 0.000000 && feature.properties['Hedgerow_target'] <= 200.000000 ) {
+            if (feature.properties['Hedgerow_target'] >= 0.000000 && feature.properties['Hedgerow_target'] <= 150.000000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1755,7 +1755,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Hedgerow_target'] >= 200.000000 && feature.properties['Hedgerow_target'] <= 400.000000 ) {
+            if (feature.properties['Hedgerow_target'] >= 150.000000 && feature.properties['Hedgerow_target'] <= 300.000000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1766,11 +1766,11 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(93,201,99,1.0)',
+                fillColor: 'rgba(93,201,98,1.0)',
                 interactive: true,
             }
             }
-            if (feature.properties['Hedgerow_target'] >= 400.000000 && feature.properties['Hedgerow_target'] <= 600.000000 ) {
+            if (feature.properties['Hedgerow_target'] >= 300.000000 && feature.properties['Hedgerow_target'] <= 600.000000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1785,7 +1785,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Hedgerow_target'] >= 600.000000 && feature.properties['Hedgerow_target'] <= 800.000000 ) {
+            if (feature.properties['Hedgerow_target'] >= 600.000000 && feature.properties['Hedgerow_target'] <= 1000.000000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1800,7 +1800,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Hedgerow_target'] >= 800.000000 && feature.properties['Hedgerow_target'] <= 926.150000 ) {
+            if (feature.properties['Hedgerow_target'] >= 1000.000000 && feature.properties['Hedgerow_target'] <= 1491.000000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1886,7 +1886,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -2033,7 +2033,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -2179,12 +2179,10 @@
                         <td>' + (feature.properties['Existing_Hedgerow_Percentage'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
@@ -2327,7 +2325,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -2474,7 +2472,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_Percentage'] !== null ? autolinker.link(feature.properties['Road_Density_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
@@ -2565,9 +2563,7 @@
         });
         bounds_group.addLayer(layer_HistoricHedgerowCover_14);
         map.addLayer(layer_HistoricHedgerowCover_14);
-        var baseMaps = {
-            'Historic Hedgerow Cover<br /><table><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Similartohistoriclevels0.png" /></td><td>1 - Similar to historic levels</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Lossbutsomerestoration1.png" /></td><td>1 - Loss but some restoration</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_2Lossandlittlerestoration2.png" /></td><td>2 - Loss and little restoration</td></tr></table>': layer_HistoricHedgerowCover_14,'Existing Hedgerow Condition<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_1Goodcondition0.png" /></td><td>1 - Good condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_2Averagecondition1.png" /></td><td>2 - Average condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_3Poorcondition2.png" /></td><td>3 - Poor condition</td></tr></table>': layer_ExistingHedgerowCondition_13,'Policy Support<br /><table><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_1Nopolicysupport0.png" /></td><td>1 - No policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_2Somepolicysupport1.png" /></td><td>2 - Some policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_3Majorpolicysupport2.png" /></td><td>3 - Major policy support</td></tr></table>': layer_PolicySupport_12,'Hedgerow Management<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_1Lessthan20inschemes0.png" /></td><td>1 - Less than 20% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_2Between2030inschemes1.png" /></td><td>2 - Between 20-30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_3Over30inschemes2.png" /></td><td>3 - Over 30% in schemes</td></tr></table>': layer_HedgerowManagement_11,'Hedgerow Priority Score<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_1LowPriority0.png" /></td><td>1 - Low Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_2MediumPriority1.png" /></td><td>2 - Medium Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_3HighPriority2.png" /></td><td>3 - High Priority</td></tr></table>': layer_HedgerowPriorityScore_10,'Hedgerow Target (km)<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_02000.png" /></td><td>0 - 200</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_2004001.png" /></td><td>200 - 400</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_4006002.png" /></td><td>400 - 600</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_6008003.png" /></td><td>600 - 800</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_8009264.png" /></td><td>800 - 926</td></tr></table>': layer_HedgerowTargetkm_9,'Plantable Area (km2)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_05000.png" /></td><td>0 - 500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_50010001.png" /></td><td>500 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_100015002.png" /></td><td>1000 - 1500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_150020003.png" /></td><td>1500 - 2000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_200025004.png" /></td><td>2000 - 2500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_250030005.png" /></td><td>2500 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_300033796.png" /></td><td>3000 - 3379</td></tr></table>': layer_PlantableAreakm2_8,'Plantable Area (%)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_80924.png" /></td><td>80 - 92</td></tr></table>': layer_PlantableArea_7,'Existing Hedgerow (%)<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_00360.png" /></td><td>0 - 0.36</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_0360991.png" /></td><td>0.36 - 0.99</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_0991432.png" /></td><td>0.99 - 1.43</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_1431783.png" /></td><td>1.43 - 1.78</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_1781974.png" /></td><td>1.78 - 1.97</td></tr></table>': layer_ExistingHedgerow_6,'Road Density (km/km2)<br /><table><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_030.png" /></td><td>0 - 3</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_351.png" /></td><td>3 - 5</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_5102.png" /></td><td>5 - 10</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_101583.png" /></td><td>10 - 15.8</td></tr></table>': layer_RoadDensitykmkm2_5,'Average Farm Size (Ha)<br /><table><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_1000.png" /></td><td>100<</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_501001.png" /></td><td>50-100</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_502.png" /></td><td>50></td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_NA3.png" /></td><td>N/A</td></tr></table>': layer_AverageFarmSizeHa_4,'Dominant Agriculture<br /><table><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableCereal0.png" /></td><td>Arable (Cereal)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableHorticulture1.png" /></td><td>Arable (Horticulture)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_NA2.png" /></td><td>N/A</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_Pasture3.png" /></td><td>Pasture</td></tr></table>': layer_DominantAgriculture_3,'Disturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_60803.png" /></td><td>60 - 80</td></tr></table>': layer_DisturbedLand_2,'Undisturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_801004.png" /></td><td>80 - 100</td></tr></table>': layer_UndisturbedLand_1,'Urban Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_010.png" /></td><td>0 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_262.png" /></td><td>2 - 6</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_6173.png" /></td><td>6 - 17</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_171004.png" /></td><td>17 - 100</td></tr></table>': layer_UrbanLand_0
-        };
+        var baseMaps = {'Historic Hedgerow Cover<br /><table><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Similartohistoriclevels0.png" /></td><td>1 - Similar to historic levels</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Lossbutsomerestoration1.png" /></td><td>1 - Loss but some restoration</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_2Lossandlittlerestoration2.png" /></td><td>2 - Loss and little restoration</td></tr></table>': layer_HistoricHedgerowCover_14,'Existing Hedgerow Condition<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_1Goodcondition0.png" /></td><td>1 - Good condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_2Averagecondition1.png" /></td><td>2 - Average condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_3Poorcondition2.png" /></td><td>3 - Poor condition</td></tr></table>': layer_ExistingHedgerowCondition_13,'Policy Support<br /><table><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_1Nopolicysupport0.png" /></td><td>1 - No policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_2Somepolicysupport1.png" /></td><td>2 - Some policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_3Majorpolicysupport2.png" /></td><td>3 - Major policy support</td></tr></table>': layer_PolicySupport_12,'Hedgerow Management<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_1Over30inschemes0.png" /></td><td>1 - Over 30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_2Between2030inschemes1.png" /></td><td>2 - Between 20-30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_3Lessthan20inschemes2.png" /></td><td>3 - Less than 20% in schemes</td></tr></table>': layer_HedgerowManagement_11,'Hedgerow Priority Score<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_1LowPriority0.png" /></td><td>1 - Low Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_2MediumPriority1.png" /></td><td>2 - Medium Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_3HighPriority2.png" /></td><td>3 - High Priority</td></tr></table>': layer_HedgerowPriorityScore_10,'Hedgerow Target (km)<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_01500.png" /></td><td>0 - 150</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_1503001.png" /></td><td>150 - 300</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_3006002.png" /></td><td>300 - 600</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_60010003.png" /></td><td>600 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_100014914.png" /></td><td>1000 - 1491</td></tr></table>': layer_HedgerowTargetkm_9,'Plantable Area (km2)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_05000.png" /></td><td>0 - 500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_50010001.png" /></td><td>500 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_100015002.png" /></td><td>1000 - 1500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_150020003.png" /></td><td>1500 - 2000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_200025004.png" /></td><td>2000 - 2500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_250030005.png" /></td><td>2500 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_300033796.png" /></td><td>3000 - 3379</td></tr></table>': layer_PlantableAreakm2_8,'Plantable Area (%)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_80924.png" /></td><td>80 - 92</td></tr></table>': layer_PlantableArea_7,'Existing Hedgerow (%)<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_00360.png" /></td><td>0 - 0.36</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_0360991.png" /></td><td>0.36 - 0.99</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_0991432.png" /></td><td>0.99 - 1.43</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_1431783.png" /></td><td>1.43 - 1.78</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerow_6_1781974.png" /></td><td>1.78 - 1.97</td></tr></table>': layer_ExistingHedgerow_6,'Road Density (km/km2)<br /><table><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_030.png" /></td><td>0 - 3</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_351.png" /></td><td>3 - 5</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_5102.png" /></td><td>5 - 10</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_101583.png" /></td><td>10 - 15.8</td></tr></table>': layer_RoadDensitykmkm2_5,'Average Farm Size (Ha)<br /><table><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_1000.png" /></td><td>100<</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_501001.png" /></td><td>50-100</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_502.png" /></td><td>50></td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_NA3.png" /></td><td>N/A</td></tr></table>': layer_AverageFarmSizeHa_4,'Dominant Agriculture<br /><table><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableCereal0.png" /></td><td>Arable (Cereal)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableHorticulture1.png" /></td><td>Arable (Horticulture)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_NA2.png" /></td><td>N/A</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_Pasture3.png" /></td><td>Pasture</td></tr></table>': layer_DominantAgriculture_3,'Disturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_60803.png" /></td><td>60 - 80</td></tr></table>': layer_DisturbedLand_2,'Undisturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_801004.png" /></td><td>80 - 100</td></tr></table>': layer_UndisturbedLand_1,'Urban Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_010.png" /></td><td>0 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_262.png" /></td><td>2 - 6</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_6173.png" /></td><td>6 - 17</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_171004.png" /></td><td>17 - 100</td></tr></table>': layer_UrbanLand_0};
         L.control.layers(baseMaps,{},{collapsed:false}).addTo(map);
         setBounds();
         map.addControl(new L.Control.Search({
