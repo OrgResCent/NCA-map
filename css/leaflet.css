@@ -387,7 +387,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 .leaflet-control-layers-scrollbar::-webkit-scrollbar-thumb {
 	background-color: #5a5a5a;
 	border-radius: 10px; 
-}
+	}
 .leaflet-control-layers-selector {
 	margin-top: 2px;
 	position: relative;
