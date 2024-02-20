@@ -18,20 +18,19 @@
             margin: 0;
         }
         </style>
-        <title>NCA Hedgerow Map</title>
+        <title>NCA Hedgerow Mapping</title>
     </head>
     <body>
         <div>
-            <h1>NCA Hedgerow Map</h1>
+            <h1>NCA Hedgerow Mapping</h1>
             <div class = logo> 
                 <a href = "https://www.organicresearchcentre.com/" target="_blank"><img src="images/ORC Logo.png" alt="Organic Research Centre" width="200" style="padding-right: 1rem;"></a>
                 <a href = "https://www.cpre.org.uk/" target="_blank"><img src="images/CPRE.webp" alt="The Countryside Charity" width="200"></a>
             </div>
-            <h2>CPRE Aiming High for Hedgerows</h2>
-            <p>The UK Government has set a target to "create or restore 30,000 miles (48,280km) of hedgerows by 2037, and 45,000 miles (72,420km) of hedgerows by 2050".
-                How to meet this target is still unclear. This tool compliments the CPRE Aiming High for Hedgerow Report in exploring how this target could be met 
-                and which areas of the UK should be prioritised for extensive hedgerow planting.</p>
-            <p>A variety of maps can be chosen using the right-hand side panel, while specific figures can be brought up by clicking on an idividual National Character Area (NCA).
+            <p>The UK Government has set an England based target to "create or restore 30,000 miles (48,280km) of hedgerows by 2037, and 45,000 miles (72,420km) of hedgerows by 2050".
+                How to meet this target is still unclear. This tool compliments the ORC hedgerow research report for CPRE which explores how this target could be met 
+                and which areas of England could be prioritised for hedgerow planting and restoration.</p>
+            <p>A variety of maps can be chosen using the right-hand side panel, while specific figures can be brought up by clicking on an individual National Character Area (NCA).
                 In addition NCAs can be searched for by name by clicking on the search icon to the left.</p>
         </div>
         <div id="map">
@@ -52,7 +51,7 @@
         <script src="data/DominantAgriculture_3.js"></script>
         <script src="data/AverageFarmSizeHa_4.js"></script>
         <script src="data/RoadDensitykmkm2_5.js"></script>
-        <script src="data/ExistingHedgerowkm_6.js"></script>
+        <script src="data/ExistingHedgerowkmkm2_6.js"></script>
         <script src="data/PlantableArea_7.js"></script>
         <script src="data/PlantableAreakm2_8.js"></script>
         <script src="data/HedgerowTargetkm_9.js"></script>
@@ -79,10 +78,32 @@
         }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[49.64068038834058,-9.3991295692595],[55.9757368601099,3.5572057423030934]]);
+        }).fitBounds([[49.549496748921726,-12.711057924867731],[56.08253371910179,8.36540913947311]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
@@ -98,78 +119,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_UrbanLand_0_0(feature) {
@@ -260,7 +285,7 @@
             pane: 'pane_UrbanLand_0',
             onEachFeature: pop_UrbanLand_0,
             style: style_UrbanLand_0_0,
-        });
+            });
         bounds_group.addLayer(layer_UrbanLand_0);
         map.addLayer(layer_UrbanLand_0);
         function pop_UndisturbedLand_1(feature, layer) {
@@ -275,78 +300,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_UndisturbedLand_1_0(feature) {
@@ -452,78 +481,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Management</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_DisturbedLand_2_0(feature) {
@@ -614,78 +647,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_DominantAgriculture_3_0(feature) {
@@ -778,78 +815,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_AverageFarmSizeHa_4_0(feature) {
@@ -942,78 +983,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_RoadDensitykmkm2_5_0(feature) {
@@ -1092,7 +1137,7 @@
         });
         bounds_group.addLayer(layer_RoadDensitykmkm2_5);
         map.addLayer(layer_RoadDensitykmkm2_5);
-        function pop_ExistingHedgerowkm_6(feature, layer) {
+        function pop_ExistingHedgerowkmkm2_6(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -1104,84 +1149,88 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
-        function style_ExistingHedgerowkm_6_0(feature) {
-            if (feature.properties['Existing_Hedgerow_km'] >= 0.000000 && feature.properties['Existing_Hedgerow_km'] <= 2.000000 ) {
+        function style_ExistingHedgerowkmkm2_6_0(feature) {
+            if (feature.properties['Existing_Hedgerow_km_km2'] >= 0.000000 && feature.properties['Existing_Hedgerow_km_km2'] <= 2.000000 ) {
                 return {
-                pane: 'pane_ExistingHedgerowkm_6',
+                pane: 'pane_ExistingHedgerowkmkm2_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1194,9 +1243,9 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Existing_Hedgerow_km'] >= 2.000000 && feature.properties['Existing_Hedgerow_km'] <= 3.500000 ) {
+            if (feature.properties['Existing_Hedgerow_km_km2'] >= 2.000000 && feature.properties['Existing_Hedgerow_km_km2'] <= 3.500000 ) {
                 return {
-                pane: 'pane_ExistingHedgerowkm_6',
+                pane: 'pane_ExistingHedgerowkmkm2_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1209,9 +1258,9 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Existing_Hedgerow_km'] >= 3.500000 && feature.properties['Existing_Hedgerow_km'] <= 4.500000 ) {
+            if (feature.properties['Existing_Hedgerow_km_km2'] >= 3.500000 && feature.properties['Existing_Hedgerow_km_km2'] <= 4.500000 ) {
                 return {
-                pane: 'pane_ExistingHedgerowkm_6',
+                pane: 'pane_ExistingHedgerowkmkm2_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1224,9 +1273,9 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Existing_Hedgerow_km'] >= 4.500000 && feature.properties['Existing_Hedgerow_km'] <= 5.400000 ) {
+            if (feature.properties['Existing_Hedgerow_km_km2'] >= 4.500000 && feature.properties['Existing_Hedgerow_km_km2'] <= 5.400000 ) {
                 return {
-                pane: 'pane_ExistingHedgerowkm_6',
+                pane: 'pane_ExistingHedgerowkmkm2_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1239,9 +1288,9 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Existing_Hedgerow_km'] >= 5.400000 && feature.properties['Existing_Hedgerow_km'] <= 5.600000 ) {
+            if (feature.properties['Existing_Hedgerow_km_km2'] >= 5.400000 && feature.properties['Existing_Hedgerow_km_km2'] <= 5.600000 ) {
                 return {
-                pane: 'pane_ExistingHedgerowkm_6',
+                pane: 'pane_ExistingHedgerowkmkm2_6',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -1255,20 +1304,20 @@
             }
             }
         }
-        map.createPane('pane_ExistingHedgerowkm_6');
-        map.getPane('pane_ExistingHedgerowkm_6').style.zIndex = 406;
-        map.getPane('pane_ExistingHedgerowkm_6').style['mix-blend-mode'] = 'normal';
-        var layer_ExistingHedgerowkm_6 = new L.geoJson(json_ExistingHedgerowkm_6, {
+        map.createPane('pane_ExistingHedgerowkmkm2_6');
+        map.getPane('pane_ExistingHedgerowkmkm2_6').style.zIndex = 406;
+        map.getPane('pane_ExistingHedgerowkmkm2_6').style['mix-blend-mode'] = 'normal';
+        var layer_ExistingHedgerowkmkm2_6 = new L.geoJson(json_ExistingHedgerowkmkm2_6, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_ExistingHedgerowkm_6',
-            layerName: 'layer_ExistingHedgerowkm_6',
-            pane: 'pane_ExistingHedgerowkm_6',
-            onEachFeature: pop_ExistingHedgerowkm_6,
-            style: style_ExistingHedgerowkm_6_0,
+            dataVar: 'json_ExistingHedgerowkmkm2_6',
+            layerName: 'layer_ExistingHedgerowkmkm2_6',
+            pane: 'pane_ExistingHedgerowkmkm2_6',
+            onEachFeature: pop_ExistingHedgerowkmkm2_6,
+            style: style_ExistingHedgerowkmkm2_6_0,
         });
-        bounds_group.addLayer(layer_ExistingHedgerowkm_6);
-        map.addLayer(layer_ExistingHedgerowkm_6);
+        bounds_group.addLayer(layer_ExistingHedgerowkmkm2_6);
+        map.addLayer(layer_ExistingHedgerowkmkm2_6);
         function pop_PlantableArea_7(feature, layer) {
             layer.on({
                 mouseout: function(e) {
@@ -1281,78 +1330,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_PlantableArea_7_0(feature) {
@@ -1367,7 +1420,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(240,249,33,1.0)',
+                fillColor: 'rgba(196,246,243,1.0)',
                 interactive: true,
             }
             }
@@ -1382,7 +1435,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(248,149,65,1.0)',
+                fillColor: 'rgba(165,220,188,1.0)',
                 interactive: true,
             }
             }
@@ -1397,7 +1450,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(203,71,120,1.0)',
+                fillColor: 'rgba(134,193,132,1.0)',
                 interactive: true,
             }
             }
@@ -1412,11 +1465,11 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(126,3,168,1.0)',
+                fillColor: 'rgba(104,167,77,1.0)',
                 interactive: true,
             }
             }
-            if (feature.properties['Plantable_Area_Percentage'] >= 80.000000 && feature.properties['Plantable_Area_Percentage'] <= 92.490000 ) {
+            if (feature.properties['Plantable_Area_Percentage'] >= 80.000000 && feature.properties['Plantable_Area_Percentage'] <= 90.598524 ) {
                 return {
                 pane: 'pane_PlantableArea_7',
                 opacity: 1,
@@ -1427,7 +1480,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(13,8,135,1.0)',
+                fillColor: 'rgba(73,140,21,1.0)',
                 interactive: true,
             }
             }
@@ -1458,82 +1511,86 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_PlantableAreakm2_8_0(feature) {
-            if (feature.properties['Plantable_Area_km2'] >= 0.000000 && feature.properties['Plantable_Area_km2'] <= 500.000000 ) {
+            if (feature.properties['Plantable_Area_km2'] >= 0.000000 && feature.properties['Plantable_Area_km2'] <= 350.000000 ) {
                 return {
                 pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
@@ -1544,11 +1601,11 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(230,97,1,1.0)',
+                fillColor: 'rgba(250,235,221,1.0)',
                 interactive: true,
             }
             }
-            if (feature.properties['Plantable_Area_km2'] >= 500.000000 && feature.properties['Plantable_Area_km2'] <= 1000.000000 ) {
+            if (feature.properties['Plantable_Area_km2'] >= 350.000000 && feature.properties['Plantable_Area_km2'] <= 700.000000 ) {
                 return {
                 pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
@@ -1559,11 +1616,11 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(245,155,66,1.0)',
+                fillColor: 'rgba(245,136,96,1.0)',
                 interactive: true,
             }
             }
-            if (feature.properties['Plantable_Area_km2'] >= 1000.000000 && feature.properties['Plantable_Area_km2'] <= 1500.000000 ) {
+            if (feature.properties['Plantable_Area_km2'] >= 700.000000 && feature.properties['Plantable_Area_km2'] <= 1500.000000 ) {
                 return {
                 pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
@@ -1574,7 +1631,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(251,205,148,1.0)',
+                fillColor: 'rgba(203,27,79,1.0)',
                 interactive: true,
             }
             }
@@ -1589,11 +1646,11 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(247,247,247,1.0)',
+                fillColor: 'rgba(97,31,83,1.0)',
                 interactive: true,
             }
             }
-            if (feature.properties['Plantable_Area_km2'] >= 2000.000000 && feature.properties['Plantable_Area_km2'] <= 2500.000000 ) {
+            if (feature.properties['Plantable_Area_km2'] >= 2000.000000 && feature.properties['Plantable_Area_km2'] <= 3182.690000 ) {
                 return {
                 pane: 'pane_PlantableAreakm2_8',
                 opacity: 1,
@@ -1604,37 +1661,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(201,196,222,1.0)',
-                interactive: true,
-            }
-            }
-            if (feature.properties['Plantable_Area_km2'] >= 2500.000000 && feature.properties['Plantable_Area_km2'] <= 3000.000000 ) {
-                return {
-                pane: 'pane_PlantableAreakm2_8',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(150,134,191,1.0)',
-                interactive: true,
-            }
-            }
-            if (feature.properties['Plantable_Area_km2'] >= 3000.000000 && feature.properties['Plantable_Area_km2'] <= 3378.720000 ) {
-                return {
-                pane: 'pane_PlantableAreakm2_8',
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(94,60,153,1.0)',
+                fillColor: 'rgba(3,5,26,1.0)',
                 interactive: true,
             }
             }
@@ -1665,78 +1692,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_HedgerowTargetkm_9_0(feature) {
@@ -1755,7 +1786,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Hedgerow_target'] >= 150.000000 && feature.properties['Hedgerow_target'] <= 300.000000 ) {
+            if (feature.properties['Hedgerow_target'] >= 150.000000 && feature.properties['Hedgerow_target'] <= 350.000000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1770,7 +1801,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Hedgerow_target'] >= 300.000000 && feature.properties['Hedgerow_target'] <= 600.000000 ) {
+            if (feature.properties['Hedgerow_target'] >= 350.000000 && feature.properties['Hedgerow_target'] <= 600.000000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1785,7 +1816,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Hedgerow_target'] >= 600.000000 && feature.properties['Hedgerow_target'] <= 1000.000000 ) {
+            if (feature.properties['Hedgerow_target'] >= 600.000000 && feature.properties['Hedgerow_target'] <= 900.000000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1800,7 +1831,7 @@
                 interactive: true,
             }
             }
-            if (feature.properties['Hedgerow_target'] >= 1000.000000 && feature.properties['Hedgerow_target'] <= 1491.000000 ) {
+            if (feature.properties['Hedgerow_target'] >= 900.000000 && feature.properties['Hedgerow_target'] <= 1583.250000 ) {
                 return {
                 pane: 'pane_HedgerowTargetkm_9',
                 opacity: 1,
@@ -1842,78 +1873,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_HedgerowPriorityScore_10_0(feature) {
@@ -1989,78 +2024,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_HedgerowManagement_11_0(feature) {
@@ -2136,78 +2175,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_PolicySupport_12_0(feature) {
@@ -2283,78 +2326,82 @@
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_ExistingHedgerowCondition_13_0(feature) {
@@ -2427,81 +2474,87 @@
                 },
                 mouseover: highlightFeature,
             });
+            layer.bindTooltip(feature.properties.NCA_Name),{
+                }
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">NCA Name</th>\
-                        <td>' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">NCA_Name</th>\
+                        <td class="visible-with-data" id="NCA_Name">' + (feature.properties['NCA_Name'] !== null ? autolinker.link(feature.properties['NCA_Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Area (km2)</th>\
-                        <td>' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Area_SqKM">' + (feature.properties['Area_SqKM'] !== null ? autolinker.link(feature.properties['Area_SqKM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Historic Hedgerow Cover</th>\
-                        <td>' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Historic">' + (feature.properties['Historic'] !== null ? autolinker.link(feature.properties['Historic'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Existing Hedgerow Condition</th>\
-                        <td>' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Existing">' + (feature.properties['Existing'] !== null ? autolinker.link(feature.properties['Existing'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Policy Support</th>\
-                        <td>' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="SEO">' + (feature.properties['SEO'] !== null ? autolinker.link(feature.properties['SEO'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Mangement</th>\
-                        <td>' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Management">' + (feature.properties['Management'] !== null ? autolinker.link(feature.properties['Management'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Priority Score</th>\
-                        <td>' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_Score">' + (feature.properties['Hedgerow_Score'] !== null ? autolinker.link(feature.properties['Hedgerow_Score'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Hedgerow Target (km)</th>\
-                        <td>' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Hedgerow_target">' + (feature.properties['Hedgerow_target'] !== null ? autolinker.link(feature.properties['Hedgerow_target'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (km2)</th>\
-                        <td>' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_km2">' + (feature.properties['Plantable_Area_km2'] !== null ? autolinker.link(feature.properties['Plantable_Area_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Plantable Area (%)</th>\
-                        <td>' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Plantable_Area_Percentage">' + (feature.properties['Plantable_Area_Percentage'] !== null ? autolinker.link(feature.properties['Plantable_Area_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Existing Hedgerow (km)</th>\
-                        <td>' + (feature.properties['Existing_Hedgerow_km'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Existing Hedgerow (km/km2)</th>\
+                        <td class="visible-with-data" id="Existing_Hedgerow_km_km2">' + (feature.properties['Existing_Hedgerow_km_km2'] !== null ? autolinker.link(feature.properties['Existing_Hedgerow_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Road Density (km/km2)</th>\
-                        <td>' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Road_Density_km_km2">' + (feature.properties['Road_Density_km_km2'] !== null ? autolinker.link(feature.properties['Road_Density_km_km2'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Average Farm Size (Ha)</th>\
-                        <td>' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Farm_Size_Ha">' + (feature.properties['Farm_Size_Ha'] !== null ? autolinker.link(feature.properties['Farm_Size_Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Dominant Agriculture</th>\
-                        <td>' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Dominant_Agriculture">' + (feature.properties['Dominant_Agriculture'] !== null ? autolinker.link(feature.properties['Dominant_Agriculture'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Disturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Disturbed_Percentage">' + (feature.properties['Intrusion_Disturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Disturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Undisturbed Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Unidisturbed_Percentage">' + (feature.properties['Intrusion_Unidisturbed_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Unidisturbed_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Urban Land (%)</th>\
-                        <td>' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Intrusion_Urban_Percentage">' + (feature.properties['Intrusion_Urban_Percentage'] !== null ? autolinker.link(feature.properties['Intrusion_Urban_Percentage'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Ecosystem Services</th>\
-                        <td>' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
+                        <td class="visible-with-data" id="Ecosystem_Services">' + (feature.properties['Ecosystem_Services'] !== null ? autolinker.link(feature.properties['Ecosystem_Services'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
         }
 
         function style_HistoricHedgerowCover_14_0(feature) {
@@ -2565,7 +2618,7 @@
         });
         bounds_group.addLayer(layer_HistoricHedgerowCover_14);
         map.addLayer(layer_HistoricHedgerowCover_14);
-        var baseMaps = {'Historic Hedgerow Cover<br /><table><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Similartohistoriclevels0.png" /></td><td>1 - Similar to historic levels</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Lossbutsomerestoration1.png" /></td><td>1 - Loss but some restoration</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_2Lossandlittlerestoration2.png" /></td><td>2 - Loss and little restoration</td></tr></table>': layer_HistoricHedgerowCover_14,'Existing Hedgerow Condition<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_1Goodcondition0.png" /></td><td>1 - Good condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_2Averagecondition1.png" /></td><td>2 - Average condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_3Poorcondition2.png" /></td><td>3 - Poor condition</td></tr></table>': layer_ExistingHedgerowCondition_13,'Policy Support<br /><table><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_1Nopolicysupport0.png" /></td><td>1 - No policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_2Somepolicysupport1.png" /></td><td>2 - Some policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_3Majorpolicysupport2.png" /></td><td>3 - Major policy support</td></tr></table>': layer_PolicySupport_12,'Hedgerow Management<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_1Over30inschemes0.png" /></td><td>1 - Over 30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_2Between2030inschemes1.png" /></td><td>2 - Between 20-30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_3Lessthan20inschemes2.png" /></td><td>3 - Less than 20% in schemes</td></tr></table>': layer_HedgerowManagement_11,'Hedgerow Priority Score<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_1LowPriority0.png" /></td><td>1 - Low Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_2MediumPriority1.png" /></td><td>2 - Medium Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_3HighPriority2.png" /></td><td>3 - High Priority</td></tr></table>': layer_HedgerowPriorityScore_10,'Hedgerow Target (km)<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_01500.png" /></td><td>0 - 150</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_1503001.png" /></td><td>150 - 300</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_3006002.png" /></td><td>300 - 600</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_60010003.png" /></td><td>600 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_100014914.png" /></td><td>1000 - 1491</td></tr></table>': layer_HedgerowTargetkm_9,'Plantable Area (km2)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_05000.png" /></td><td>0 - 500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_50010001.png" /></td><td>500 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_100015002.png" /></td><td>1000 - 1500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_150020003.png" /></td><td>1500 - 2000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_200025004.png" /></td><td>2000 - 2500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_250030005.png" /></td><td>2500 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_300033796.png" /></td><td>3000 - 3379</td></tr></table>': layer_PlantableAreakm2_8,'Plantable Area (%)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_80924.png" /></td><td>80 - 92</td></tr></table>': layer_PlantableArea_7,'Existing Hedgerow (km)<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkm_6_020.png" /></td><td>0 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkm_6_2351.png" /></td><td>2 - 3.5</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkm_6_35452.png" /></td><td>3.5 - 4.5</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkm_6_45553.png" /></td><td>4.5 - 5.5</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkm_6_554.png" /></td><td>5.5+</td></tr></table>': layer_ExistingHedgerowkm_6,'Road Density (km/km2)<br /><table><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_030.png" /></td><td>0 - 3</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_351.png" /></td><td>3 - 5</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_5102.png" /></td><td>5 - 10</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_101583.png" /></td><td>10 - 15.8</td></tr></table>': layer_RoadDensitykmkm2_5,'Average Farm Size (Ha)<br /><table><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_1000.png" /></td><td>100<</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_501001.png" /></td><td>50-100</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_502.png" /></td><td>50></td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_NA3.png" /></td><td>N/A</td></tr></table>': layer_AverageFarmSizeHa_4,'Dominant Agriculture<br /><table><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableCereal0.png" /></td><td>Arable (Cereal)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableHorticulture1.png" /></td><td>Arable (Horticulture)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_NA2.png" /></td><td>N/A</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_Pasture3.png" /></td><td>Pasture</td></tr></table>': layer_DominantAgriculture_3,'Disturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_60803.png" /></td><td>60 - 80</td></tr></table>': layer_DisturbedLand_2,'Undisturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_801004.png" /></td><td>80 - 100</td></tr></table>': layer_UndisturbedLand_1,'Urban Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_010.png" /></td><td>0 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_262.png" /></td><td>2 - 6</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_6173.png" /></td><td>6 - 17</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_171004.png" /></td><td>17 - 100</td></tr></table>': layer_UrbanLand_0};
+        var baseMaps = {'Historic Hedgerow Cover<br /><table><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Similartohistoriclevels0.png" /></td><td>1 - Similar to historic levels</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_1Lossbutsomerestoration1.png" /></td><td>1 - Loss but some restoration</td></tr><tr><td style="text-align: center;"><img src="legend/HistoricHedgerowCover_14_2Lossandlittlerestoration2.png" /></td><td>2 - Loss and little restoration</td></tr></table>': layer_HistoricHedgerowCover_14,'Existing Hedgerow Condition<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_1Goodcondition0.png" /></td><td>1 - Good condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_2Averagecondition1.png" /></td><td>2 - Average condition</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowCondition_13_3Poorcondition2.png" /></td><td>3 - Poor condition</td></tr></table>': layer_ExistingHedgerowCondition_13,'Policy Support<br /><table><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_1Nopolicysupport0.png" /></td><td>1 - No policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_2Somepolicysupport1.png" /></td><td>2 - Some policy support</td></tr><tr><td style="text-align: center;"><img src="legend/PolicySupport_12_3Majorpolicysupport2.png" /></td><td>3 - Major policy support</td></tr></table>': layer_PolicySupport_12,'Hedgerow Management<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_1Over30inschemes0.png" /></td><td>1 - Over 30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_2Between2030inschemes1.png" /></td><td>2 - Between 20-30% in schemes</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowManagement_11_3Lessthan20inschemes2.png" /></td><td>3 - Less than 20% in schemes</td></tr></table>': layer_HedgerowManagement_11,'Hedgerow Priority Score<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_1LowPriority0.png" /></td><td>1 - Low Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_2MediumPriority1.png" /></td><td>2 - Medium Priority</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowPriorityScore_10_3HighPriority2.png" /></td><td>3 - High Priority</td></tr></table>': layer_HedgerowPriorityScore_10,'Hedgerow Target (km)<br /><table><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_01500.png" /></td><td>0 - 150</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_1503501.png" /></td><td>150 - 350</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_3506002.png" /></td><td>350 - 600</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_6009003.png" /></td><td>600 - 900</td></tr><tr><td style="text-align: center;"><img src="legend/HedgerowTargetkm_9_90015834.png" /></td><td>900 - 1583</td></tr></table>': layer_HedgerowTargetkm_9,'Plantable Area (km2)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_03500.png" /></td><td>0 - 350</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_3507001.png" /></td><td>350 - 700</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_70015002.png" /></td><td>700 - 1500</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_150020003.png" /></td><td>1500 - 2000</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableAreakm2_8_200031834.png" /></td><td>2000 - 3183</td></tr></table>': layer_PlantableAreakm2_8,'Plantable Area (%)<br /><table><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/PlantableArea_7_80914.png" /></td><td>80 - 91</td></tr></table>': layer_PlantableArea_7,'Existing Hedgerow (km/km2)<br /><table><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkmkm2_6_020.png" /></td><td>0 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkmkm2_6_2351.png" /></td><td>2 - 3.5</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkmkm2_6_35452.png" /></td><td>3.5 - 4.5</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkmkm2_6_45553.png" /></td><td>4.5 - 5.5</td></tr><tr><td style="text-align: center;"><img src="legend/ExistingHedgerowkmkm2_6_554.png" /></td><td>5.5+</td></tr></table>': layer_ExistingHedgerowkmkm2_6,'Road Density (km/km2)<br /><table><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_030.png" /></td><td>0 - 3</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_351.png" /></td><td>3 - 5</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_5102.png" /></td><td>5 - 10</td></tr><tr><td style="text-align: center;"><img src="legend/RoadDensitykmkm2_5_101583.png" /></td><td>10 - 15.8</td></tr></table>': layer_RoadDensitykmkm2_5,'Average Farm Size (Ha)<br /><table><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_1000.png" /></td><td>100<</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_501001.png" /></td><td>50-100</td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_502.png" /></td><td>50></td></tr><tr><td style="text-align: center;"><img src="legend/AverageFarmSizeHa_4_NA3.png" /></td><td>N/A</td></tr></table>': layer_AverageFarmSizeHa_4,'Dominant Agriculture<br /><table><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableCereal0.png" /></td><td>Arable (Cereal)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_ArableHorticulture1.png" /></td><td>Arable (Horticulture)</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_NA2.png" /></td><td>N/A</td></tr><tr><td style="text-align: center;"><img src="legend/DominantAgriculture_3_Pasture3.png" /></td><td>Pasture</td></tr></table>': layer_DominantAgriculture_3,'Disturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/DisturbedLand_2_60803.png" /></td><td>60 - 80</td></tr></table>': layer_DisturbedLand_2,'Undisturbed Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_0200.png" /></td><td>0 - 20</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_20401.png" /></td><td>20 - 40</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_40602.png" /></td><td>40 - 60</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_60803.png" /></td><td>60 - 80</td></tr><tr><td style="text-align: center;"><img src="legend/UndisturbedLand_1_801004.png" /></td><td>80 - 100</td></tr></table>': layer_UndisturbedLand_1,'Urban Land (%)<br /><table><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_010.png" /></td><td>0 - 1</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_121.png" /></td><td>1 - 2</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_262.png" /></td><td>2 - 6</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_6173.png" /></td><td>6 - 17</td></tr><tr><td style="text-align: center;"><img src="legend/UrbanLand_0_171004.png" /></td><td>17 - 100</td></tr></table>': layer_UrbanLand_0};
         L.control.layers(baseMaps,{},{collapsed:false}).addTo(map);
         setBounds();
         map.addControl(new L.Control.Search({
@@ -2575,6 +2628,16 @@
             propertyName: 'NCA_Name'}));
         document.getElementsByClassName('search-button')[0].className +=
          ' fa fa-binoculars';
+        resetLabels([layer_HistoricHedgerowCover_14]);
+        map.on("zoomend", function(){
+            resetLabels([layer_HistoricHedgerowCover_14]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_HistoricHedgerowCover_14]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_HistoricHedgerowCover_14]);
+        });
         </script>
     </body>
 </html>
