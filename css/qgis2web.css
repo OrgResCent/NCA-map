@@ -56,11 +56,11 @@
             max-height: 50vw;
             max-width: 50vw;
         }
-        /* .leaflet-tooltip {
+        /*.leaflet-tooltip {
             background: none;
             box-shadow: none;
             border: none;
-        } */
+        }*/
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
             border: 0px;
         }

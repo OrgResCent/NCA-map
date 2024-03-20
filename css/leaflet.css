@@ -97,7 +97,7 @@
 .leaflet-pane         { z-index: 400; }
 
 .leaflet-tile-pane    { z-index: 200; }
-.leaflet-overlay-pane { z-index: 415; }
+.leaflet-overlay-pane { z-index: 420; }
 .leaflet-shadow-pane  { z-index: 500; }
 .leaflet-marker-pane  { z-index: 600; }
 .leaflet-tooltip-pane   { z-index: 650; }
@@ -540,7 +540,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	overflow: auto;
 	border-bottom: 1px solid #ddd;
 	border-top: 1px solid #ddd;
-}
+	}
+
 .leaflet-oldie .leaflet-popup-content-wrapper {
 	-ms-zoom: 1;
 	}
@@ -587,7 +588,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	user-select: none;
 	pointer-events: none;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-	transition: none!important;
+	transition: none!important;	
 }
 .leaflet-tooltip.leaflet-clickable {
 	cursor: pointer;
